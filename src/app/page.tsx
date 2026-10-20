@@ -1,69 +1,61 @@
-import Image from "next/image";
+import { db, initDatabase } from "@/lib/db";
+import { Product } from "@/types";
+import { HeroSlider } from "@/components/home/HeroSlider";
+import { FlashSaleSection } from "@/components/home/FlashSaleSection";
+import { CategorySection } from "@/components/home/CategorySection";
 
-export default function Home() {
+export default async function Home() {
+  initDatabase();
+
+  const products = db.prepare(`
+    SELECT 
+      p.id, p.name, p.slug, p.thumbnail, p.condition, p.isHot, p.isFlashSale,
+      b.name as brandName, b.slug as brandSlug,
+      c.name as categoryName, c.slug as categorySlug,
+      MIN(pv.salePrice) as minPrice,
+      MAX(pv.originPrice) as maxOriginPrice
+    FROM products p
+    JOIN brands b ON p.brandId = b.id
+    JOIN categories c ON p.categoryId = c.id
+    JOIN product_variants pv ON p.id = pv.productId
+    GROUP BY p.id
+    ORDER BY p.isHot DESC, p.createdAt DESC
+  `).all() as Product[];
+
+  const xiaomiProducts = products.filter((p) => p.brandSlug === "xiaomi");
+  const appleProducts = products.filter((p) => p.brandSlug === "apple");
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="max-w-7xl mx-auto px-4 pb-12">
+      {/* 1. Hero Banner Slider & Features */}
+      <HeroSlider />
+
+      {/* 2. Flash Sale Section */}
+      <FlashSaleSection products={products} />
+
+      {/* 3. Xiaomi Section */}
+      <CategorySection
+        title="ĐIỆN THOẠI XIAOMI GIÁ RẺ NHẤT"
+        subtitle="Hàng xách tay nguyên seal, ROM Tiếng Việt ổn định, Tặng BH Vàng"
+        products={xiaomiProducts}
+        filterTags={[
+          { name: "Redmi Note 13 Series", href: "/dien-thoai?tag=redmi-note-13" },
+          { name: "Redmi K70 Series", href: "/dien-thoai?tag=redmi-k70" },
+          { name: "Xiaomi 14 Series", href: "/dien-thoai?tag=xiaomi-14" },
+        ]}
+      />
+
+      {/* 4. iPhone Section */}
+      <CategorySection
+        title="IPHONE CŨ ZIN 99% - CHÍNH HÃNG"
+        subtitle="Máy đẹp như mới, pin trâu, bảo hành toàn diện 12 tháng"
+        products={appleProducts}
+        filterTags={[
+          { name: "iPhone 15 Series", href: "/dien-thoai?tag=iphone-15" },
+          { name: "iPhone 14 Series", href: "/dien-thoai?tag=iphone-14" },
+          { name: "iPhone 13 Series", href: "/dien-thoai?tag=iphone-13" },
+        ]}
+      />
+    </main>
   );
 }
