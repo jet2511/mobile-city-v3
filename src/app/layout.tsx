@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { RegionProvider } from "@/context/RegionContext";
 import { CartProvider } from "@/context/CartContext";
@@ -8,14 +8,11 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { FloatingContactWidget } from "@/components/layout/FloatingContactWidget";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const beVietnamPro = Be_Vietnam_Pro({
+  weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-be-vietnam-pro",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -32,9 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${beVietnamPro.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#f5f5f5] text-gray-800">
+      <body className="min-h-full flex flex-col bg-[#f8f9ff] text-[#0b1c30] font-sans">
         <RegionProvider>
           <CartProvider>
             <Header />
