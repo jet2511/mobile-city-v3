@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Product, ProductVariant } from "@/types";
 import { useRegion } from "@/context/RegionContext";
 import { useCart } from "@/context/CartContext";
+import { useToast } from "@/context/ToastContext";
 import { ShieldCheck, MapPin, CheckCircle2, ShoppingCart, Truck, Sparkles, RefreshCw, CreditCard, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
@@ -16,7 +17,16 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
   const router = useRouter();
   const { region, currentRegionName } = useRegion();
   const { addToCart } = useCart();
+  const { showToast } = useToast();
   const variants = product.variants || [];
+
+  // Active Image Gallery
+  const allImages = useMemo(() => {
+    const list = Array.isArray(product.images) && product.images.length > 0 ? product.images : [product.thumbnail];
+    return Array.from(new Set([product.thumbnail, ...list]));
+  }, [product.thumbnail, product.images]);
+
+  const [activeImage, setActiveImage] = useState<string>(allImages[0] || product.thumbnail);
 
   // 1. Phân nhóm RAM/ROM và Màu sắc độc lập
   const memoryOptions = useMemo(() => {
@@ -65,6 +75,36 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
   const totalStockInRegion = branchInventories.reduce((acc, curr) => acc + curr.quantity, 0);
 
+  const handleAddToCart = (redirect: boolean = false) => {
+    if (!activeVariant) return;
+
+    addToCart({
+      productId: product.id,
+      variantId: activeVariant.id,
+      name: product.name,
+      slug: product.slug,
+      thumbnail: product.thumbnail,
+      color: activeVariant.color,
+      ram: activeVariant.ram,
+      storage: activeVariant.storage,
+      basePrice: activeVariant.salePrice,
+      goldCareFee: activeVariant.goldCareFee,
+      hasGoldCare,
+      quantity: 1,
+    });
+
+    showToast({
+      title: "Đã thêm vào giỏ hàng!",
+      message: `${product.name} - ${activeVariant.color} (${hasGoldCare ? "Kèm BH Vàng" : "BH Tiêu chuẩn"})`,
+      thumbnail: product.thumbnail,
+      type: "success",
+    });
+
+    if (redirect) {
+      router.push("/gio-hang");
+    }
+  };
+
   return (
     <div className="space-y-6 my-6">
       {/* Breadcrumb Stitch Style */}
@@ -82,16 +122,36 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
         {/* Cột trái: Ảnh Gallery & Specs (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
           <div className="bg-white p-6 rounded-2xl border border-[#e2e8f0] shadow-sm flex items-center justify-center relative overflow-hidden">
-            <span className="absolute top-3 left-3 bg-[#0b1c30] text-[#38bdf8] text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+            <span className="absolute top-3 left-3 bg-[#0b1c30] text-[#38bdf8] text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10">
               {product.condition === "LIKE_NEW_99" ? "Cũ 99% Zin Đẹp" : "Mới 100% Nguyên Seal"}
             </span>
             <img
               data-testid="pdp-main-image"
-              src={product.thumbnail}
+              src={activeImage}
               alt={product.name}
               className="w-full max-h-[380px] object-contain hover:scale-105 transition-transform duration-300"
             />
           </div>
+
+          {/* Dải ảnh Thumbnail đa góc nhìn */}
+          {allImages.length > 1 && (
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {allImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveImage(img)}
+                  className={`w-16 h-16 rounded-xl border p-1 bg-white flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${
+                    activeImage === img
+                      ? "border-[#8d4b00] ring-2 ring-[#8d4b00]/25 shadow-sm"
+                      : "border-[#e2e8f0] hover:border-gray-400 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-contain" />
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Hỗ trợ kỹ thuật & ROM box */}
           <div className="bg-[#eff4ff] p-4 rounded-xl border border-[#dce9ff] text-xs space-y-2">
@@ -122,7 +182,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                     }`}
                   >
                     <dt className="text-[#887364] capitalize font-medium">{key}:</dt>
-                    <dd className="font-bold text-[#0b1c30] text-right max-w-[65%]">{val}</dd>
+                    <dd className="font-bold text-[#0b1c30] text-right max-w-[65%]">{val as string}</dd>
                   </div>
                 ))}
               </dl>
@@ -176,9 +236,10 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   return (
                     <button
                       key={mem}
+                      type="button"
                       data-testid={`option-mem-${mem.replace(/\s+/g, "-")}`}
                       onClick={() => setSelectedMemory(mem)}
-                      className={`p-3 rounded-xl text-left border transition-all relative ${
+                      className={`p-3 rounded-xl text-left border transition-all relative cursor-pointer ${
                         isSelected
                           ? "border-[#8d4b00] bg-amber-50/70 text-[#0b1c30] ring-1 ring-[#8d4b00] shadow-sm"
                           : "border-[#e2e8f0] hover:border-[#dbc2b0] bg-white text-[#0b1c30]"
@@ -212,9 +273,10 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   return (
                     <button
                       key={col}
+                      type="button"
                       data-testid={`option-color-${col.replace(/\s+/g, "-")}`}
                       onClick={() => setSelectedColor(col)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                      className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         isSelected
                           ? "border-[#8d4b00] bg-amber-50 text-[#8d4b00] ring-1 ring-[#8d4b00] shadow-sm"
                           : "border-[#e2e8f0] hover:border-gray-300 bg-white text-gray-700"
@@ -316,24 +378,8 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             <div className="flex gap-3">
               <button
                 data-testid="btn-buy-now"
-                onClick={() => {
-                  if (!activeVariant) return;
-                  addToCart({
-                    productId: product.id,
-                    variantId: activeVariant.id,
-                    name: product.name,
-                    slug: product.slug,
-                    thumbnail: product.thumbnail,
-                    color: activeVariant.color,
-                    ram: activeVariant.ram,
-                    storage: activeVariant.storage,
-                    basePrice: activeVariant.salePrice,
-                    goldCareFee: activeVariant.goldCareFee,
-                    hasGoldCare,
-                    quantity: 1,
-                  });
-                  router.push("/gio-hang");
-                }}
+                type="button"
+                onClick={() => handleAddToCart(true)}
                 className="flex-1 bg-[#bb0112] hover:bg-[#a10110] text-white font-black py-3.5 rounded-xl shadow-md transition-all flex flex-col items-center justify-center cursor-pointer"
               >
                 <span className="text-base uppercase tracking-wider font-extrabold">MUA NGAY GIÁ TỐT</span>
@@ -342,24 +388,9 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
               <button
                 data-testid="btn-add-cart"
-                onClick={() => {
-                  if (!activeVariant) return;
-                  addToCart({
-                    productId: product.id,
-                    variantId: activeVariant.id,
-                    name: product.name,
-                    slug: product.slug,
-                    thumbnail: product.thumbnail,
-                    color: activeVariant.color,
-                    ram: activeVariant.ram,
-                    storage: activeVariant.storage,
-                    basePrice: activeVariant.salePrice,
-                    goldCareFee: activeVariant.goldCareFee,
-                    hasGoldCare,
-                    quantity: 1,
-                  });
-                }}
-                className="px-5 bg-white border-2 border-[#8d4b00] hover:bg-amber-50 text-[#8d4b00] font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+                type="button"
+                onClick={() => handleAddToCart(false)}
+                className="px-5 bg-white border-2 border-[#8d4b00] hover:bg-amber-50 text-[#8d4b00] font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
               >
                 <ShoppingCart size={20} />
                 <span className="text-xs font-bold hidden sm:inline">Thêm Giỏ</span>

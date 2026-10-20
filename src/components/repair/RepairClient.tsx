@@ -51,7 +51,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
       {/* Banner Giới thiệu dịch vụ */}
       <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 md:p-8 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-2">
-          <span className="bg-[#c69a39] text-white text-xs font-bold uppercase px-2.5 py-1 rounded">
+          <span className="bg-[#8d4b00] text-white text-xs font-bold uppercase px-2.5 py-1 rounded">
             MobileCity Care
           </span>
           <h1 className="text-2xl md:text-3xl font-extrabold">
@@ -90,7 +90,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
                 onClick={() => setSelectedModel(m)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
                   selectedModel === m
-                    ? "bg-[#c69a39] text-white shadow-sm"
+                    ? "bg-[#8d4b00] text-white shadow-sm"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -106,7 +106,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="Nhập tên máy hoặc lỗi (vd: iPhone 15, thay pin...)"
-              className="w-full pl-8 pr-8 py-2 text-xs border rounded-lg outline-none focus:border-[#c69a39] bg-gray-50 focus:bg-white"
+              className="w-full pl-8 pr-8 py-2 text-xs border rounded-lg outline-none focus:border-[#8d4b00] bg-gray-50 focus:bg-white"
             />
             <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
             {searchKeyword && (
@@ -129,7 +129,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
               onClick={() => setSearchKeyword(tag)}
               className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
                 searchKeyword.toLowerCase() === tag.toLowerCase()
-                  ? "bg-yellow-50 text-[#c69a39] border-[#c69a39]"
+                  ? "bg-yellow-50 text-[#8d4b00] border-[#8d4b00]"
                   : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
               }`}
             >
@@ -139,7 +139,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
           {searchKeyword && (
             <button
               onClick={() => setSearchKeyword("")}
-              className="text-[#c69a39] text-[11px] font-semibold hover:underline ml-2"
+              className="text-[#8d4b00] text-[11px] font-semibold hover:underline ml-2"
             >
               Xóa lọc dịch vụ
             </button>
@@ -151,7 +151,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="p-4 bg-gray-50 border-b flex justify-between items-center">
           <h2 className="font-bold text-sm text-gray-800 uppercase flex items-center gap-2">
-            <Wrench size={16} className="text-[#c69a39]" />
+            <Wrench size={16} className="text-[#8d4b00]" />
             Bảng Giá Dịch Vụ Sửa Chữa Minh Bạch ({filteredServices.length} dịch vụ)
           </h2>
           <span className="text-xs text-green-600 font-bold">✓ Giá đã gồm công tháo lắp</span>
@@ -200,7 +200,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
                       <button
                         data-testid={`btn-book-${s.id}`}
                         onClick={() => setBookingService(s)}
-                        className="bg-[#c69a39] hover:bg-[#b0872e] text-white font-bold px-3 py-1.5 rounded transition-colors"
+                        className="bg-[#8d4b00] hover:bg-[#b15f00] text-white font-bold px-3 py-1.5 rounded transition-colors"
                       >
                         Đặt Lịch
                       </button>
@@ -247,7 +247,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
             ) : (
               <form onSubmit={handleBookingSubmit} className="space-y-4">
                 <div>
-                  <span className="text-[11px] font-bold text-[#c69a39] uppercase">Đặt lịch sửa chữa</span>
+                  <span className="text-[11px] font-bold text-[#8d4b00] uppercase">Đặt lịch sửa chữa</span>
                   <h3 className="font-extrabold text-base text-gray-900">{bookingService.serviceName}</h3>
                   <p className="text-xs text-gray-500">
                     Dòng máy: <strong>{bookingService.deviceModel}</strong> • Giá:{" "}
@@ -265,7 +265,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="Nguyễn Văn A"
-                      className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#c69a39]"
+                      className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#8d4b00]"
                     />
                   </div>
 
@@ -278,7 +278,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       placeholder="0912 345 678"
-                      className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#c69a39]"
+                      className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#8d4b00]"
                     />
                   </div>
 
@@ -290,7 +290,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
                       value={bookingTime}
                       onChange={(e) => setBookingTime(e.target.value)}
                       placeholder="VD: 14h30 chiều nay"
-                      className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#c69a39]"
+                      className="w-full border rounded-lg px-3 py-2 outline-none focus:border-[#8d4b00]"
                     />
                   </div>
                 </div>
@@ -303,7 +303,7 @@ export function RepairClient({ initialServices, models }: RepairClientProps) {
                 <button
                   type="submit"
                   data-testid="btn-submit-booking"
-                  className="w-full bg-[#c69a39] hover:bg-[#b0872e] text-white font-black py-2.5 rounded-lg text-xs transition-colors shadow-md uppercase tracking-wider"
+                  className="w-full bg-[#8d4b00] hover:bg-[#b15f00] text-white font-black py-2.5 rounded-lg text-xs transition-colors shadow-md uppercase tracking-wider"
                 >
                   Xác Nhận Đặt Lịch Lấy Ngay
                 </button>
