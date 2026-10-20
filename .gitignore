@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database
+dev.db*
+scripts/fixtures/.crawl-checkpoint.json
+
+/src/generated/prisma
