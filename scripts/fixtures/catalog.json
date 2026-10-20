@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Xiaomi 14 Pro 5G",
+    "slug": "xiaomi-14-pro-5g",
+    "brand": "xiaomi",
+    "category": "dien-thoai",
+    "thumbnail": "https://cdn.mobilecity.vn/mobilecity-vn/images/2023/10/w300/xiaomi-14-pro-den.png.webp",
+    "images": [
+      "https://cdn.mobilecity.vn/mobilecity-vn/images/2023/10/w300/xiaomi-14-pro-den.png.webp"
+    ],
+    "description": "Xiaomi 14 Pro trang bị màn hình AMOLED 2K 120Hz viền siêu mỏng, chip Snapdragon 8 Gen 3 và hệ thống camera Leica khẩu độ biến thiên f/1.42 - f/4.0.",
+    "specs": {
+      "screen": "6.73 inch, LTPO AMOLED, 2K (1440 x 3200 pixels), 120Hz",
+      "cpu": "Snapdragon 8 Gen 3 (4 nm)",
+      "ram": "12GB - 16GB",
+      "storage": "256GB - 512GB - 1TB",
+      "camera": "50 MP Leica + 50 MP + 50 MP, Selfie 32 MP",
+      "battery": "4880 mAh, Sạc siêu nhanh 120W"
+    },
+    "condition": "BRAND_NEW",
+    "isHot": 1,
+    "isFlashSale": 1,
+    "variants": [
+      { "color": "Đen", "ram": "12GB", "storage": "256GB", "originPrice": 14500000, "salePrice": 12950000, "goldCareFee": 550000 },
+      { "color": "Trắng", "ram": "16GB", "storage": "512GB", "originPrice": 16500000, "salePrice": 14850000, "goldCareFee": 550000 }
+    ]
+  },
+  {
+    "name": "Asus ROG Phone 8 Pro",
+    "slug": "asus-rog-phone-8-pro",
+    "brand": "asus-rog",
+    "category": "dien-thoai",
+    "thumbnail": "https://cdn.mobilecity.vn/mobilecity-vn/images/2024/01/w300/asus-rog-phone-8-pro.png.webp",
+    "images": [
+      "https://cdn.mobilecity.vn/mobilecity-vn/images/2024/01/w300/asus-rog-phone-8-pro.png.webp"
+    ],
+    "description": "Quái vật Gaming Phone hàng đầu thế giới với Snapdragon 8 Gen 3, tản nhiệt buồng hơi GameCool 8 và hệ thống nút bấm siêu âm AirTrigger độc quyền.",
+    "specs": {
+      "screen": "6.78 inch, Samsung AMOLED, FHD+, 165Hz",
+      "cpu": "Snapdragon 8 Gen 3 (4 nm)",
+      "ram": "16GB - 24GB",
+      "storage": "512GB - 1TB",
+      "camera": "50 MP OIS + 32 MP Tele 3x + 13 MP Ultrawide",
+      "battery": "5500 mAh, Sạc nhanh 65W"
+    },
+    "condition": "BRAND_NEW",
+    "isHot": 1,
+    "isFlashSale": 0,
+    "variants": [
+      { "color": "Phantom Black", "ram": "16GB", "storage": "512GB", "originPrice": 22500000, "salePrice": 20950000, "goldCareFee": 750000 }
+    ]
+  }
+]

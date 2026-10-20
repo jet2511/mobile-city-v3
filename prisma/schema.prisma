@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  icon        String?
+  parentId    String?
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Brand {
+  id        String    @id @default(uuid())
+  name      String
+  slug      String    @unique
+  logo      String?
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Branch {
+  id          String      @id @default(uuid())
+  name        String
+  region      String      // "HN", "HCM", "DN"
+  address     String
+  hotline     String
+  inventories Inventory[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Product {
+  id           String           @id @default(uuid())
+  name         String
+  slug         String           @unique
+  thumbnail    String
+  images       String           // JSON string of images array
+  description  String?
+  specs        String?          // JSON string of detailed technical specs
+  condition    String           @default("BRAND_NEW") // BRAND_NEW, LIKE_NEW_99, REFURBISHED
+  isHot        Boolean          @default(false)
+  isFlashSale  Boolean          @default(false)
+  categoryId   String
+  category     Category         @relation(fields: [categoryId], references: [id])
+  brandId      String
+  brand        Brand            @relation(fields: [brandId], references: [id])
+  variants     ProductVariant[]
+  reviews      ProductReview[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id           String      @id @default(uuid())
+  productId    String
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku          String      @unique
+  color        String
+  ram          String?
+  storage      String?
+  originPrice  Float
+  salePrice    Float
+  goldCareFee  Float       @default(300000) // Bảo Hành Vàng (Gold Care fee)
+  inventories  Inventory[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Inventory {
+  id         String         @id @default(uuid())
+  branchId   String
+  branch     Branch         @relation(fields: [branchId], references: [id])
+  variantId  String
+  variant    ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  quantity   Int            @default(0)
+  updatedAt  DateTime       @updatedAt
+
+  @@unique([branchId, variantId])
+}
+
+model RepairService {
+  id          String   @id @default(uuid())
+  deviceModel String   // e.g. "iPhone 15 Pro Max", "Xiaomi 14"
+  serviceName String   // e.g. "Thay Màn Hình", "Ép Kính", "Thay Pin"
+  price       Float
+  warranty    String   // e.g. "6 tháng", "12 tháng"
+  duration    String   // e.g. "45 - 60 phút"
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ProductReview {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  author    String
+  rating    Int      @default(5)
+  content   String
+  createdAt DateTime @default(now())
+}
