@@ -51,8 +51,7 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
 
         // 4. Filter theo khoảng giá
         const price = p.minPrice || 0;
-        if (selectedPriceRange === "under-3m" && price >= 3000000) return false;
-        if (selectedPriceRange === "3m-5m" && (price < 3000000 || price > 5000000)) return false;
+        if (selectedPriceRange === "under-5m" && price >= 5000000) return false;
         if (selectedPriceRange === "5m-8m" && (price < 5000000 || price > 8000000)) return false;
         if (selectedPriceRange === "8m-12m" && (price < 8000000 || price > 12000000)) return false;
         if (selectedPriceRange === "above-12m" && price <= 12000000) return false;
@@ -70,16 +69,16 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
   }, [initialProducts, selectedBrand, selectedPriceRange, selectedCondition, searchKeyword, sortBy]);
 
   return (
-    <div className="space-y-6 my-6">
-      {/* Tiêu đề danh mục & Tóm tắt */}
-      <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-5 my-6">
+      {/* Tiêu đề danh mục & Tóm tắt Stitch Style */}
+      <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-extrabold text-gray-900 flex items-center gap-2">
-            <Smartphone size={22} className="text-[#c69a39]" />
+          <h1 className="text-xl md:text-2xl font-extrabold text-[#0b1c30] flex items-center gap-2">
+            <Smartphone size={24} className="text-[#8d4b00]" />
             ĐIỆN THOẠI DI ĐỘNG CHÍNH HÃNG & XÁCH TAY
           </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            Hiển thị <strong>{filteredProducts.length}</strong> sản phẩm phù hợp
+          <p className="text-xs text-[#887364] mt-1">
+            Hiển thị <strong className="text-[#0b1c30]">{filteredProducts.length}</strong> sản phẩm giá tốt nhất
           </p>
         </div>
 
@@ -91,8 +90,8 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
               type="text"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
-              placeholder="Lọc nhanh tên máy (vd: 15 Pro, Note 13...)"
-              className="w-full pl-9 pr-8 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-[#c69a39] focus:bg-white transition-colors"
+              placeholder="Lọc nhanh tên máy..."
+              className="w-full pl-9 pr-8 py-2 text-xs bg-[#f8f9ff] border border-[#dbc2b0]/70 rounded-lg outline-none focus:border-[#8d4b00] focus:bg-white transition-colors"
             />
             {searchKeyword && (
               <button
@@ -111,7 +110,7 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
               data-testid="select-sort-by"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="border rounded-lg px-2.5 py-1.5 bg-gray-50 text-gray-800 outline-none focus:border-[#c69a39] font-medium text-xs cursor-pointer"
+              className="border border-[#e2e8f0] rounded-lg px-3 py-2 bg-white text-[#0b1c30] outline-none focus:border-[#8d4b00] font-medium text-xs cursor-pointer shadow-sm"
             >
               <option value="default">Mới nhất / Mặc định</option>
               <option value="hot">Sản phẩm Hot nhất</option>
@@ -122,18 +121,20 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
         </div>
       </div>
 
-      {/* Thanh Bộ Lọc Đa Chiều (Facets Filter) */}
-      <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm space-y-3.5">
+      {/* Thanh Bộ Lọc Đa Chiều (Facets Filter) Stitch Style */}
+      <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] shadow-sm space-y-4">
         {/* Lọc Hãng */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="font-bold text-gray-600 min-w-[80px] flex items-center gap-1">
-            <Filter size={13} className="text-[#c69a39]" /> Hãng:
+          <span className="font-bold text-[#0b1c30] min-w-[80px] flex items-center gap-1.5">
+            <Filter size={13} className="text-[#8d4b00]" /> Hãng:
           </span>
           <button
             data-testid="filter-brand-all"
             onClick={() => setSelectedBrand("all")}
-            className={`px-3 py-1 rounded-full font-medium transition-colors ${
-              selectedBrand === "all" ? "bg-[#c69a39] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
+              selectedBrand === "all"
+                ? "bg-[#8d4b00] text-white shadow-sm"
+                : "bg-[#f8f9ff] text-gray-700 hover:bg-amber-50 border border-[#e2e8f0]"
             }`}
           >
             Tất cả
@@ -143,8 +144,10 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
               key={b.slug}
               data-testid={`filter-brand-${b.slug}`}
               onClick={() => setSelectedBrand(b.slug)}
-              className={`px-3 py-1 rounded-full font-medium transition-colors ${
-                selectedBrand === b.slug ? "bg-[#c69a39] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
+                selectedBrand === b.slug
+                  ? "bg-[#8d4b00] text-white shadow-sm"
+                  : "bg-[#f8f9ff] text-gray-700 hover:bg-amber-50 border border-[#e2e8f0]"
               }`}
             >
               {b.name}
@@ -153,12 +156,11 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
         </div>
 
         {/* Lọc Mức Giá */}
-        <div className="flex flex-wrap items-center gap-2 text-xs border-t pt-3 border-gray-100">
-          <span className="font-bold text-gray-600 min-w-[80px]">Mức giá:</span>
+        <div className="flex flex-wrap items-center gap-2 text-xs border-t pt-3.5 border-[#e2e8f0]">
+          <span className="font-bold text-[#0b1c30] min-w-[80px]">Mức giá:</span>
           {[
             { id: "all", label: "Tất cả mức giá" },
-            { id: "under-3m", label: "Dưới 3 triệu" },
-            { id: "3m-5m", label: "Từ 3 - 5 triệu" },
+            { id: "under-5m", label: "Dưới 5 triệu" },
             { id: "5m-8m", label: "Từ 5 - 8 triệu" },
             { id: "8m-12m", label: "Từ 8 - 12 triệu" },
             { id: "above-12m", label: "Trên 12 triệu" },
@@ -167,8 +169,10 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
               key={r.id}
               data-testid={`filter-price-${r.id}`}
               onClick={() => setSelectedPriceRange(r.id)}
-              className={`px-3 py-1 rounded-full font-medium transition-colors ${
-                selectedPriceRange === r.id ? "bg-[#c69a39] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
+                selectedPriceRange === r.id
+                  ? "bg-[#8d4b00] text-white shadow-sm"
+                  : "bg-[#f8f9ff] text-gray-700 hover:bg-amber-50 border border-[#e2e8f0]"
               }`}
             >
               {r.label}
@@ -177,9 +181,9 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
         </div>
 
         {/* Lọc Tình Trạng Máy */}
-        <div className="flex flex-wrap items-center justify-between gap-2 text-xs border-t pt-3 border-gray-100">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs border-t pt-3.5 border-[#e2e8f0]">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-bold text-gray-600 min-w-[80px]">Tình trạng:</span>
+            <span className="font-bold text-[#0b1c30] min-w-[80px]">Tình trạng:</span>
             {[
               { id: "all", label: "Tất cả" },
               { id: "BRAND_NEW", label: "Mới 100% Nguyên Seal" },
@@ -189,8 +193,10 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
                 key={c.id}
                 data-testid={`filter-condition-${c.id}`}
                 onClick={() => setSelectedCondition(c.id)}
-                className={`px-3 py-1 rounded-full font-medium transition-colors ${
-                  selectedCondition === c.id ? "bg-[#c69a39] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
+                  selectedCondition === c.id
+                    ? "bg-[#8d4b00] text-white shadow-sm"
+                    : "bg-[#f8f9ff] text-gray-700 hover:bg-amber-50 border border-[#e2e8f0]"
                 }`}
               >
                 {c.label}
@@ -202,7 +208,7 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="text-[#c69a39] hover:text-[#a17822] font-semibold flex items-center gap-1 hover:underline ml-auto"
+              className="text-[#8d4b00] hover:text-[#b15f00] font-bold flex items-center gap-1 hover:underline ml-auto"
             >
               <RotateCcw size={12} />
               Xóa bộ lọc
@@ -219,11 +225,11 @@ export function CategoryListingClient({ initialProducts, brands }: CategoryListi
           ))}
         </div>
       ) : (
-        <div className="bg-white p-12 text-center rounded-xl border border-gray-100 shadow-sm space-y-3">
+        <div className="bg-white p-12 text-center rounded-2xl border border-[#e2e8f0] shadow-sm space-y-3">
           <p className="text-gray-500 text-sm">Không có sản phẩm nào phù hợp với bộ lọc hiện tại.</p>
           <button
             onClick={clearAllFilters}
-            className="text-xs font-bold text-[#c69a39] hover:underline"
+            className="text-xs font-bold text-[#8d4b00] hover:underline"
           >
             Xóa toàn bộ bộ lọc & Xem tất cả sản phẩm
           </button>
