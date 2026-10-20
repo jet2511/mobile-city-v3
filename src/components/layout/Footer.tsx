@@ -99,15 +99,19 @@ export function Footer() {
             Đăng Ký Nhận Khuyến Mãi
           </div>
           <p className="text-xs text-gray-500">
-            Nhận thông báo khi có đợt Flash Sale giá sốc hoặc hàng hot mới về:
+            Nhận thông báo khi có đợt ưu đãi giá sốc hoặc hàng hot mới về:
           </p>
           <div className="flex items-center gap-1.5">
             <input
               type="email"
+              data-testid="footer-newsletter-input"
               placeholder="Nhập email của bạn..."
               className="flex-1 bg-[#f8f9ff] border border-[#cbd5e1] rounded-lg px-3 py-2 text-xs outline-none focus:border-[#8d4b00]"
             />
-            <button className="bg-[#8d4b00] hover:bg-[#b15f00] text-white px-3.5 py-2 rounded-lg font-bold text-xs transition-colors shadow-sm">
+            <button
+              data-testid="footer-newsletter-btn"
+              className="bg-[#8d4b00] hover:bg-[#b15f00] text-white px-3.5 py-2 rounded-lg font-bold text-xs transition-colors shadow-sm"
+            >
               Gửi
             </button>
           </div>

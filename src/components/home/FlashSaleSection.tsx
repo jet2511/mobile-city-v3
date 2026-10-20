@@ -16,7 +16,7 @@ export function FlashSaleSection({ products }: { products: Product[] }) {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 bg-[#bb0112] text-white px-3.5 py-1 rounded-full font-black text-xs tracking-wider uppercase shadow-sm">
             <Flame size={15} className="text-yellow-300 animate-pulse" />
-            FLASH SALE GIÁ SỐC
+            FLASH SALE
           </div>
           <div className="flex items-center gap-1.5 text-xs font-semibold text-[#554336]">
             <Clock size={14} className="text-[#8d4b00]" />
