@@ -1,0 +1,14 @@
+node_modules
+.next
+build
+dist
+coverage
+test-results
+playwright-report
+*.db*
+skills-lock.json
+.agents
+.claude
+.windsurf
+scripts/fixtures
+

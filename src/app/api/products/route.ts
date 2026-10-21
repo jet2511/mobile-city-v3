@@ -1,49 +1,25 @@
-import { db, initDatabase } from "@/lib/db";
+import { getProductList } from "@/features/products/services/product.service";
+import { productListQuerySchema } from "@/features/products/schemas/product.schema";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  initDatabase();
-  const { searchParams } = new URL(request.url);
-  const q = searchParams.get("q") || "";
-  const category = searchParams.get("category");
-  const branchId = searchParams.get("branchId");
+  try {
+    const { searchParams } = new URL(request.url);
+    const parsed = productListQuerySchema.safeParse({
+      q: searchParams.get("q") || undefined,
+      category: searchParams.get("category") || undefined,
+      branchId: searchParams.get("branchId") || undefined,
+    });
 
-  let query = `
-    SELECT 
-      p.id, p.name, p.slug, p.thumbnail, p.condition, p.isHot, p.isFlashSale,
-      b.name as brandName, b.slug as brandSlug,
-      c.name as categoryName, c.slug as categorySlug,
-      MIN(pv.salePrice) as minPrice,
-      MAX(pv.originPrice) as maxOriginPrice
-    FROM products p
-    JOIN brands b ON p.brandId = b.id
-    JOIN categories c ON p.categoryId = c.id
-    JOIN product_variants pv ON p.id = pv.productId
-  `;
+    const params = parsed.success ? parsed.data : {};
+    const products = getProductList(params);
 
-  const conditions: string[] = [];
-  const params: unknown[] = [];
-
-  if (q) {
-    conditions.push(`p.name LIKE ?`);
-    params.push(`%${q}%`);
+    return NextResponse.json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
-
-  if (category) {
-    conditions.push(`c.slug = ?`);
-    params.push(category);
-  }
-
-  if (conditions.length > 0) {
-    query += ` WHERE ` + conditions.join(" AND ");
-  }
-
-  query += ` GROUP BY p.id ORDER BY p.isHot DESC, p.createdAt DESC`;
-
-  const products = db.prepare(query).all(...params);
-
-  return NextResponse.json({
-    success: true,
-    data: products
-  });
 }

@@ -1,53 +1,46 @@
-import { db, initDatabase } from "@/lib/db";
+import {
+  getProductComments,
+  addProductComment,
+} from "@/features/products/services/product.service";
+import { commentSubmissionSchema } from "@/features/products/schemas/product.schema";
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 
 export async function GET(request: Request) {
-  initDatabase();
-  const { searchParams } = new URL(request.url);
-  const productId = searchParams.get("productId");
+  try {
+    const { searchParams } = new URL(request.url);
+    const productId = searchParams.get("productId");
 
-  if (!productId) {
-    return NextResponse.json({ success: false, message: "Thiếu productId" }, { status: 400 });
+    if (!productId) {
+      return NextResponse.json({ success: false, message: "Thiếu productId" }, { status: 400 });
+    }
+
+    const comments = getProductComments(productId);
+    return NextResponse.json({ success: true, data: comments });
+  } catch (error) {
+    console.error("Failed to fetch comments:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
-
-  const comments = db.prepare(`
-    SELECT * FROM product_comments
-    WHERE productId = ?
-    ORDER BY createdAt DESC
-  `).all(productId);
-
-  return NextResponse.json({ success: true, data: comments });
 }
 
 export async function POST(request: Request) {
-  initDatabase();
   try {
     const body = await request.json();
-    const { productId, author, phone, content, rating } = body;
+    const validation = commentSubmissionSchema.safeParse(body);
 
-    if (!productId || !author || !content) {
-      return NextResponse.json({ success: false, message: "Vui lòng nhập đủ thông tin" }, { status: 400 });
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: validation.error.issues[0]?.message || "Dữ liệu không hợp lệ",
+        },
+        { status: 400 },
+      );
     }
 
-    const id = crypto.randomUUID();
-    db.prepare(`
-      INSERT INTO product_comments (id, productId, author, phone, content, rating, reply, isStaffReply)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      id,
-      productId,
-      author,
-      phone || null,
-      content,
-      rating || 5,
-      "Chào bạn! Cảm ơn bạn đã quan tâm. Sản phẩm này hiện đang sẵn hàng tại tất cả chi nhánh MobileCity. Bạn có thể ghé trực tiếp hoặc đặt giữ hàng nhé!",
-      1
-    );
-
-    return NextResponse.json({ success: true, message: "Gửi câu hỏi thành công!" });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ success: false, message: "Lỗi hệ thống" }, { status: 500 });
+    const comment = addProductComment(validation.data);
+    return NextResponse.json({ success: true, data: comment }, { status: 201 });
+  } catch (error) {
+    console.error("Failed to create comment:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }

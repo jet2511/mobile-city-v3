@@ -1,21 +1,20 @@
-import { db, initDatabase } from "@/lib/db";
+import { getRepairServices } from "@/features/repairs/services/repair.service";
+import { repairQuerySchema } from "@/features/repairs/schemas/repair.schema";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  initDatabase();
-  const { searchParams } = new URL(request.url);
-  const model = searchParams.get("model") || "";
+  try {
+    const { searchParams } = new URL(request.url);
+    const parsed = repairQuerySchema.safeParse({
+      model: searchParams.get("model") || undefined,
+    });
 
-  let query = `SELECT * FROM repair_services`;
-  const params: unknown[] = [];
+    const model = parsed.success ? parsed.data.model : "";
+    const services = getRepairServices(model);
 
-  if (model) {
-    query += ` WHERE deviceModel LIKE ?`;
-    params.push(`%${model}%`);
+    return NextResponse.json({ success: true, data: services });
+  } catch (error) {
+    console.error("Failed to fetch repair services:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
-
-  query += ` ORDER BY price DESC`;
-  const services = db.prepare(query).all(...params);
-
-  return NextResponse.json({ success: true, data: services });
 }
