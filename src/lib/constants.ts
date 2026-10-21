@@ -80,6 +80,14 @@ export const MAIN_NAVIGATION = [
     slug: "tin-tuc"
   },
   {
+    title: "SO SÁNH",
+    slug: "so-sanh"
+  },
+  {
+    title: "THU CŨ",
+    slug: "thu-cu-doi-moi"
+  },
+  {
     title: "BẢO HÀNH VÀNG",
     slug: "chinh-sach-bao-hanh-vang",
     isHighlight: true

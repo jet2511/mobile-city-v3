@@ -20,9 +20,8 @@ export function CartClient() {
     e.preventDefault();
     if (!customerName || !customerPhone) return;
 
-    const fakeOrderCode = `MC-${Math.floor(100000 + Math.random() * 900000)}`;
-    setOrderSuccess(fakeOrderCode);
     clearCart();
+    window.location.href = "/dat-hang-thanh-cong";
   };
 
   if (orderSuccess) {

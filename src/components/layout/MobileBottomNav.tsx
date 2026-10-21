@@ -3,19 +3,17 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Grid, Wrench, ShieldCheck, ShoppingCart } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { Home, Grid, Wrench, ShieldCheck, User } from "lucide-react";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  const { totalQuantity } = useCart();
 
   const navItems = [
     { label: "Trang chủ", href: "/", icon: Home },
-    { label: "Danh mục", href: "/dien-thoai", icon: Grid },
+    { label: "Sản phẩm", href: "/dien-thoai", icon: Grid },
     { label: "Sửa chữa", href: "/sua-chua", icon: Wrench },
-    { label: "Bảo hành", href: "/tra-cuu-bao-hanh", icon: ShieldCheck },
-    { label: "Giỏ hàng", href: "/gio-hang", icon: ShoppingCart, badge: totalQuantity },
+    { label: "Tra cứu BH", href: "/tra-cuu-bao-hanh", icon: ShieldCheck },
+    { label: "Tài khoản", href: "/dang-nhap", icon: User },
   ];
 
   return (
@@ -25,7 +23,11 @@ export function MobileBottomNav() {
     >
       {navItems.map((item) => {
         const Icon = item.icon;
-        const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+        const isActive =
+          pathname === item.href ||
+          (item.href !== "/" && pathname.startsWith(item.href)) ||
+          (item.href === "/dang-nhap" && pathname.startsWith("/tai-khoan"));
+
         return (
           <Link
             key={item.href}
@@ -36,11 +38,6 @@ export function MobileBottomNav() {
           >
             <div className="relative">
               <Icon size={20} className={isActive ? "stroke-[2.5]" : "stroke-2"} />
-              {typeof item.badge === "number" && item.badge > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white">
-                  {item.badge > 99 ? "99+" : item.badge}
-                </span>
-              )}
             </div>
             <span className="text-[10px] mt-0.5 tracking-tight leading-none">{item.label}</span>
           </Link>

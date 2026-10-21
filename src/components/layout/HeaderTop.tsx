@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRegion } from "@/context/RegionContext";
 import { REGIONS } from "@/lib/constants";
-import { MapPin, Phone, ShieldCheck, ChevronDown, Wrench, RefreshCw, Smartphone } from "lucide-react";
+import { MapPin, Phone, ShieldCheck, ChevronDown, User, Scale, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
 
 export function HeaderTop() {
@@ -67,18 +67,25 @@ export function HeaderTop() {
 
           <span className="text-gray-300 hidden md:inline">|</span>
 
-          {/* Địa chỉ rút gọn */}
+          {/* Tiện ích tra cứu & Showroom */}
           <div className="hidden lg:flex items-center gap-3 text-gray-600 text-[11px]">
-            <span>Hà Nội: <strong className="text-gray-800">120 Thái Hà</strong></span>
+            <Link href="/he-thong-showroom" className="hover:text-[#8d4b00] transition-colors">
+              Hệ thống 6 showroom toàn quốc
+            </Link>
             <span>•</span>
-            <span>TP.HCM: <strong className="text-gray-800">123 Trần Quang Khải</strong></span>
+            <Link href="/huong-dan-tra-gop" className="hover:text-[#8d4b00] transition-colors">
+              Trả góp 0%
+            </Link>
             <span>•</span>
-            <span>Đà Nẵng: <strong className="text-gray-800">97 Hàm Nghi</strong></span>
+            <Link href="/so-sanh" className="hover:text-[#8d4b00] transition-colors flex items-center gap-1">
+              <ArrowLeftRight size={11} className="text-[#8d4b00]" />
+              So sánh máy
+            </Link>
           </div>
         </div>
 
-        {/* Hotline & Links tiện ích */}
-        <div className="flex items-center gap-4 shrink-0 text-[12px]">
+        {/* Hotline & Tài khoản / Tra cứu */}
+        <div className="flex items-center gap-3.5 shrink-0 text-[12px]">
           <div className="flex items-center gap-1">
             <Phone size={13} className="text-[#8d4b00]" />
             <span className="hidden sm:inline text-gray-500">Hotline:</span>
@@ -101,12 +108,14 @@ export function HeaderTop() {
             <span className="hidden sm:inline">Tra cứu</span> bảo hành
           </Link>
 
+          <span className="text-gray-300">|</span>
+
           <Link
-            href="/he-thong-showroom"
-            className="hidden md:flex items-center gap-1 text-gray-700 hover:text-[#8d4b00] transition-colors"
+            href="/dang-nhap"
+            className="flex items-center gap-1 text-[#0b1c30] font-semibold hover:text-[#8d4b00] transition-colors bg-white/70 px-2 py-0.5 rounded border border-[#dbc2b0]/50"
           >
-            <MapPin size={13} className="text-[#8d4b00]" />
-            Showroom
+            <User size={13} className="text-[#8d4b00]" />
+            <span>Tài khoản</span>
           </Link>
         </div>
       </div>
