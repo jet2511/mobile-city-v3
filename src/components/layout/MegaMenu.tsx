@@ -1,15 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { MAIN_NAVIGATION } from "@/lib/constants";
 import { ChevronRight, Award, Zap, Sparkles, ShieldAlert } from "lucide-react";
 
 export function MegaMenu() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = (slug: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setActiveMenu(slug);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 150);
+  };
 
   return (
-    <nav className="bg-[#0b1c30] text-white text-xs font-semibold select-none shadow-sm relative border-b border-[#213145]">
+    <nav
+      className="bg-[#0b1c30] text-white text-xs font-semibold select-none shadow-sm relative border-b border-[#213145]"
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="max-w-[1240px] mx-auto px-4 lg:px-8 flex items-center justify-between">
         <ul className="flex items-center gap-1 overflow-x-auto whitespace-nowrap py-0.5">
           {MAIN_NAVIGATION.map((nav) => {
@@ -20,8 +38,7 @@ export function MegaMenu() {
               <li
                 key={nav.slug}
                 className="shrink-0"
-                onMouseEnter={() => hasSub && setActiveMenu(nav.slug)}
-                onMouseLeave={() => setActiveMenu(null)}
+                onMouseEnter={() => hasSub && handleMouseEnter(nav.slug)}
               >
                 <Link
                   href={`/${nav.slug}`}
@@ -38,10 +55,11 @@ export function MegaMenu() {
                   {nav.title}
                 </Link>
 
-                {/* Mega Dropdown Panel: Container rộng, bóng mờ đẹp, không giật */}
+                {/* Mega Dropdown Panel */}
                 {hasSub && isOpen && (
                   <div
                     data-testid={`mega-dropdown-${nav.slug}`}
+                    onMouseEnter={() => handleMouseEnter(nav.slug)}
                     className="hidden md:grid absolute left-4 lg:left-8 top-full bg-white text-gray-800 shadow-2xl rounded-b-2xl border border-gray-200 p-6 z-50 w-[780px] grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-1 duration-150"
                   >
                     {nav.subCategories?.map((col, idx) => (

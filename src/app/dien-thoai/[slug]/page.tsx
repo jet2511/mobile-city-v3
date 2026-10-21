@@ -70,15 +70,33 @@ export default async function ProductDetailPage({
     variants: enrichedVariants,
   };
 
+  // Schema.org Structured Data JSON-LD
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name: fullProduct.name,
+    image: fullProduct.images && fullProduct.images.length > 0 ? fullProduct.images : [fullProduct.thumbnail],
+    description: fullProduct.description,
+    brand: {
+      "@type": "Brand",
+      name: fullProduct.brandName,
+    },
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "VND",
+      lowPrice: fullProduct.variants[0]?.salePrice || 0,
+      highPrice: fullProduct.variants[fullProduct.variants.length - 1]?.salePrice || fullProduct.variants[0]?.salePrice || 0,
+      offerCount: fullProduct.variants.length,
+      availability: "https://schema.org/InStock",
+    },
+  };
+
   return (
     <main className="max-w-7xl mx-auto px-4 pb-12">
-      <div className="text-xs text-gray-500 py-3 flex items-center gap-1.5 border-b border-gray-200 mb-2">
-        <a href="/" className="hover:text-[#c69a39]">Trang chủ</a>
-        <span>/</span>
-        <a href="/dien-thoai" className="hover:text-[#c69a39]">Điện thoại</a>
-        <span>/</span>
-        <span className="text-gray-800 font-semibold">{fullProduct.name}</span>
-      </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <ProductDetailClient product={fullProduct} />
 

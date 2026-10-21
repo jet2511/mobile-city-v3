@@ -33,7 +33,7 @@ export function MobileBottomNav() {
             key={item.href}
             href={item.href}
             className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] relative rounded-lg px-2 transition-colors ${
-              isActive ? "text-[#c69a39] font-bold" : "text-gray-500 hover:text-gray-800"
+              isActive ? "text-[#8d4b00] font-bold" : "text-gray-500 hover:text-gray-800"
             }`}
           >
             <div className="relative">

@@ -1,6 +1,7 @@
 import { Region } from "@/types";
 
-export const BRAND_PRIMARY_COLOR = "#c69a39"; // Màu vàng thương hiệu MobileCity
+export const BRAND_PRIMARY_COLOR = "#8d4b00"; // Màu Amber thương hiệu MobileCity Stitch Design
+export const BRAND_ACCENT_COLOR = "#d97706"; // Màu vàng kim điểm nhấn
 
 export const REGIONS: { code: Region; name: string; hotline: string }[] = [
   { code: "HN", name: "Hà Nội", hotline: "0969.120.120" },

@@ -45,3 +45,6 @@ dev.db*
 scripts/fixtures/.crawl-checkpoint.json
 
 /src/generated/prisma
+test-results/
+playwright-report/
+

@@ -3,10 +3,12 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { RegionProvider } from "@/context/RegionContext";
 import { CartProvider } from "@/context/CartContext";
+import { ToastProvider } from "@/context/ToastContext";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { FloatingContactWidget } from "@/components/layout/FloatingContactWidget";
+import { ToastContainer } from "@/components/ui/ToastContainer";
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700", "800"],
@@ -34,11 +36,14 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#f8f9ff] text-[#0b1c30] font-sans">
         <RegionProvider>
           <CartProvider>
-            <Header />
-            <div className="flex-1 pb-16 md:pb-0">{children}</div>
-            <Footer />
-            <FloatingContactWidget />
-            <MobileBottomNav />
+            <ToastProvider>
+              <Header />
+              <div className="flex-1 pb-16 md:pb-0">{children}</div>
+              <Footer />
+              <FloatingContactWidget />
+              <ToastContainer />
+              <MobileBottomNav />
+            </ToastProvider>
           </CartProvider>
         </RegionProvider>
       </body>

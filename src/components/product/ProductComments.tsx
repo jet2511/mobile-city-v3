@@ -63,13 +63,13 @@ export function ProductComments({ productId, productName }: { productId: string;
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-6 my-6">
-      <div className="border-b pb-3 flex items-center justify-between">
-        <h2 className="text-base font-extrabold text-gray-900 uppercase flex items-center gap-2">
-          <MessageSquare size={18} className="text-[#c69a39]" />
+    <div className="bg-white p-6 rounded-2xl border border-[#e2e8f0] shadow-sm space-y-6 my-6">
+      <div className="border-b border-[#e2e8f0] pb-3 flex items-center justify-between">
+        <h2 className="text-base font-extrabold text-[#0b1c30] uppercase flex items-center gap-2">
+          <MessageSquare size={18} className="text-[#8d4b00]" />
           Hỏi Đáp & Đánh Giá Về {productName} ({comments.length})
         </h2>
-        <div className="flex items-center gap-1 text-xs text-yellow-500 font-bold">
+        <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
           <Star size={14} fill="currentColor" />
           <Star size={14} fill="currentColor" />
           <Star size={14} fill="currentColor" />
@@ -80,19 +80,20 @@ export function ProductComments({ productId, productName }: { productId: string;
       </div>
 
       {/* Form gửi câu hỏi */}
-      <form onSubmit={handleSubmit} className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
-        <span className="text-xs font-bold text-gray-700 block">
+      <form onSubmit={handleSubmit} className="space-y-3 bg-[#f8f9ff] p-4 rounded-xl border border-[#e2e8f0]">
+        <label htmlFor="comment-content" className="text-xs font-bold text-[#0b1c30] block">
           Bạn có thắc mắc gì về sản phẩm? Hãy để lại bình luận để kỹ thuật viên giải đáp ngay!
-        </span>
+        </label>
 
         <textarea
+          id="comment-content"
           data-testid="input-comment-content"
           required
           rows={3}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Viết câu hỏi của bạn tại đây... (VD: Máy có sẵn hàng tại 120 Thái Hà không shop?)"
-          className="w-full text-xs p-3 border rounded-lg outline-none focus:border-[#c69a39] bg-white"
+          className="w-full text-xs p-3 border border-[#cbd5e1] rounded-lg outline-none focus:border-[#8d4b00] focus:ring-1 focus:ring-[#8d4b00]/20 bg-white text-[#0b1c30]"
         />
 
         <div className="flex flex-wrap items-center gap-3">
@@ -100,24 +101,26 @@ export function ProductComments({ productId, productName }: { productId: string;
             type="text"
             data-testid="input-comment-author"
             required
+            aria-label="Họ và tên người bình luận"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="Họ và tên của bạn *"
-            className="flex-1 min-w-[180px] text-xs p-2.5 border rounded-lg outline-none focus:border-[#c69a39] bg-white"
+            className="flex-1 min-w-[180px] text-xs p-2.5 border border-[#cbd5e1] rounded-lg outline-none focus:border-[#8d4b00] bg-white text-[#0b1c30]"
           />
           <input
             type="tel"
             data-testid="input-comment-phone"
+            aria-label="Số điện thoại"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Số điện thoại (để nhận tin nhắn khi có phản hồi)"
-            className="flex-1 min-w-[180px] text-xs p-2.5 border rounded-lg outline-none focus:border-[#c69a39] bg-white"
+            className="flex-1 min-w-[180px] text-xs p-2.5 border border-[#cbd5e1] rounded-lg outline-none focus:border-[#8d4b00] bg-white text-[#0b1c30]"
           />
           <button
             type="submit"
             data-testid="btn-submit-comment"
             disabled={submitting}
-            className="bg-[#c69a39] hover:bg-[#b0872e] text-white font-bold text-xs px-5 py-2.5 rounded-lg transition-colors flex items-center gap-1 shadow-sm"
+            className="bg-[#8d4b00] hover:bg-[#b15f00] text-white font-bold text-xs px-5 py-2.5 rounded-lg transition-colors flex items-center gap-1 shadow-sm cursor-pointer"
           >
             <Send size={13} />
             {submitting ? "Đang gửi..." : "Gửi bình luận"}
@@ -125,22 +128,22 @@ export function ProductComments({ productId, productName }: { productId: string;
         </div>
 
         {submittedMessage && (
-          <div data-testid="comment-success-notice" className="text-xs text-green-600 font-bold pt-1">
+          <div data-testid="comment-success-notice" className="text-xs text-emerald-600 font-bold pt-1">
             ✓ Đã gửi câu hỏi thành công! Kỹ thuật viên sẽ phản hồi bạn trong ít phút.
           </div>
         )}
       </form>
 
       {/* Danh sách bình luận */}
-      <div className="space-y-4 divide-y divide-gray-100">
+      <div className="space-y-4 divide-y divide-[#e2e8f0]">
         {comments.map((c) => (
           <div key={c.id} data-testid={`comment-item-${c.id}`} className="pt-4 space-y-2 text-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-gray-200 text-gray-700 font-bold flex items-center justify-center text-[11px]">
+                <div className="w-7 h-7 rounded-full bg-slate-200 text-[#0b1c30] font-bold flex items-center justify-center text-[11px]">
                   {c.author.charAt(0).toUpperCase()}
                 </div>
-                <strong className="text-gray-900">{c.author}</strong>
+                <strong className="text-[#0b1c30]">{c.author}</strong>
               </div>
               <span className="text-[11px] text-gray-400">{c.createdAt?.slice(0, 10)}</span>
             </div>
@@ -149,12 +152,12 @@ export function ProductComments({ productId, productName }: { productId: string;
 
             {/* Phản hồi từ MobileCity Staff */}
             {c.reply && (
-              <div className="ml-9 mt-2 bg-yellow-50/70 p-3 rounded-lg border border-yellow-200/80 space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-[#c69a39] text-[11px]">
-                  <ShieldCheck size={13} />
+              <div className="ml-9 mt-2 bg-[#fef3c7]/60 p-3 rounded-lg border border-[#fde68a] space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-[#8d4b00] text-[11px]">
+                  <ShieldCheck size={13} className="text-[#d97706]" />
                   Quản Trị Viên MobileCity phản hồi:
                 </div>
-                <p className="text-gray-800 text-xs">{c.reply}</p>
+                <p className="text-[#0b1c30] text-xs">{c.reply}</p>
               </div>
             )}
           </div>

@@ -16,14 +16,14 @@ export default function NewsPage() {
   return (
     <main className="max-w-7xl mx-auto px-4 pb-12">
       <div className="text-xs text-gray-500 py-3 flex items-center gap-1.5 border-b border-gray-200 mb-6">
-        <a href="/" className="hover:text-[#c69a39]">Trang chủ</a>
+        <a href="/" className="hover:text-[#8d4b00]">Trang chủ</a>
         <span>/</span>
         <span className="text-gray-800 font-semibold">Tin tức & Cẩm nang công nghệ</span>
       </div>
 
       <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm mb-6">
         <h1 className="text-xl md:text-2xl font-extrabold text-gray-900 uppercase flex items-center gap-2">
-          <Newspaper size={24} className="text-[#c69a39]" />
+          <Newspaper size={24} className="text-[#8d4b00]" />
           TIN TỨC CÔNG NGHỆ & HƯỚNG DẪN KỸ THUẬT
         </h1>
         <p className="text-xs text-gray-500 mt-1">
@@ -36,7 +36,7 @@ export default function NewsPage() {
           <article
             key={art.id}
             data-testid={`news-item-${art.slug}`}
-            className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col hover:border-[#c69a39] hover:shadow-md transition-all group"
+            className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden flex flex-col hover:border-[#8d4b00] hover:shadow-md transition-all group"
           >
             <Link href={`/tin-tuc/${art.slug}`} className="block overflow-hidden bg-gray-50 p-4">
               <img
@@ -50,7 +50,7 @@ export default function NewsPage() {
               <div>
                 <div className="flex items-center gap-4 text-[11px] text-gray-400 mb-2">
                   <span className="flex items-center gap-1 font-medium text-gray-600">
-                    <User size={12} className="text-[#c69a39]" /> {art.author}
+                    <User size={12} className="text-[#8d4b00]" /> {art.author}
                   </span>
                   <span className="flex items-center gap-1">
                     <Eye size={12} /> {art.views.toLocaleString()} lượt xem
@@ -59,7 +59,7 @@ export default function NewsPage() {
 
                 <Link
                   href={`/tin-tuc/${art.slug}`}
-                  className="font-extrabold text-base text-gray-900 hover:text-[#c69a39] line-clamp-2 transition-colors"
+                  className="font-extrabold text-base text-gray-900 hover:text-[#8d4b00] line-clamp-2 transition-colors"
                 >
                   {art.title}
                 </Link>
@@ -71,7 +71,7 @@ export default function NewsPage() {
               <div className="pt-2 border-t border-gray-100">
                 <Link
                   href={`/tin-tuc/${art.slug}`}
-                  className="text-xs font-bold text-[#c69a39] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-[#8d4b00] hover:underline flex items-center gap-1"
                 >
                   Đọc tiếp chi tiết <ChevronRight size={14} />
                 </Link>

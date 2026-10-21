@@ -20,7 +20,7 @@ export default async function RepairPage() {
   return (
     <main className="max-w-7xl mx-auto px-4 pb-12">
       <div className="text-xs text-gray-500 py-3 flex items-center gap-1.5 border-b border-gray-200 mb-2">
-        <a href="/" className="hover:text-[#c69a39]">Trang chủ</a>
+        <a href="/" className="hover:text-[#8d4b00]">Trang chủ</a>
         <span>/</span>
         <span className="text-gray-800 font-semibold">Dịch vụ sửa chữa MobileCity Care</span>
       </div>
