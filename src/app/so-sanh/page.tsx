@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeftRight, Check, X, Smartphone, Plus, Trophy, Zap, ShieldAlert, Cpu, Battery, Camera } from "lucide-react";
 
 interface PhoneSpec {
@@ -68,6 +68,22 @@ export default function ComparePage() {
   const [selectedIdxA, setSelectedIdxA] = useState(0);
   const [selectedIdxB, setSelectedIdxB] = useState(1);
 
+  const handleSelectA = (newIdx: number) => {
+    setSelectedIdxA(newIdx);
+    if (newIdx === selectedIdxB) {
+      const nextB = (newIdx + 1) % COMPARISON_DATA.length;
+      setSelectedIdxB(nextB);
+    }
+  };
+
+  const handleSelectB = (newIdx: number) => {
+    setSelectedIdxB(newIdx);
+    if (newIdx === selectedIdxA) {
+      const nextA = (newIdx + 1) % COMPARISON_DATA.length;
+      setSelectedIdxA(nextA);
+    }
+  };
+
   const phoneA = COMPARISON_DATA[selectedIdxA];
   const phoneB = COMPARISON_DATA[selectedIdxB];
 
@@ -92,10 +108,10 @@ export default function ComparePage() {
         {/* Device A */}
         <div className="bg-white border border-[#e2e8f0] p-5 rounded-3xl shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-400 uppercase">Thiết Bị 1</span>
+            <span className="text-xs font-bold text-amber-700 uppercase">Thiết Bị 1</span>
             <select
               value={selectedIdxA}
-              onChange={(e) => setSelectedIdxA(Number(e.target.value))}
+              onChange={(e) => handleSelectA(Number(e.target.value))}
               className="text-xs font-bold text-[#0b1c30] bg-gray-50 border border-gray-200 rounded-lg p-2 focus:outline-none"
             >
               {COMPARISON_DATA.map((p, idx) => (
@@ -105,7 +121,9 @@ export default function ComparePage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <img src={phoneA.image} alt={phoneA.name} className="w-20 h-20 object-cover rounded-xl border border-gray-100" />
+            <div className="w-20 h-20 relative rounded-xl overflow-hidden border border-gray-100 shrink-0">
+              <Image src={phoneA.image} alt={phoneA.name} fill className="object-cover" sizes="80px" unoptimized />
+            </div>
             <div>
               <h3 className="font-black text-[#0b1c30] text-lg">{phoneA.name}</h3>
               <p className="text-[#994700] font-black text-xl">{phoneA.price}</p>
@@ -117,10 +135,10 @@ export default function ComparePage() {
         {/* Device B */}
         <div className="bg-white border border-[#e2e8f0] p-5 rounded-3xl shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-400 uppercase">Thiết Bị 2</span>
+            <span className="text-xs font-bold text-blue-700 uppercase">Thiết Bị 2</span>
             <select
               value={selectedIdxB}
-              onChange={(e) => setSelectedIdxB(Number(e.target.value))}
+              onChange={(e) => handleSelectB(Number(e.target.value))}
               className="text-xs font-bold text-[#0b1c30] bg-gray-50 border border-gray-200 rounded-lg p-2 focus:outline-none"
             >
               {COMPARISON_DATA.map((p, idx) => (
@@ -130,7 +148,9 @@ export default function ComparePage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <img src={phoneB.image} alt={phoneB.name} className="w-20 h-20 object-cover rounded-xl border border-gray-100" />
+            <div className="w-20 h-20 relative rounded-xl overflow-hidden border border-gray-100 shrink-0">
+              <Image src={phoneB.image} alt={phoneB.name} fill className="object-cover" sizes="80px" unoptimized />
+            </div>
             <div>
               <h3 className="font-black text-[#0b1c30] text-lg">{phoneB.name}</h3>
               <p className="text-[#994700] font-black text-xl">{phoneB.price}</p>
@@ -154,8 +174,14 @@ export default function ComparePage() {
               <Smartphone size={16} className="text-[#994700]" />
               Màn hình hiển thị
             </div>
-            <div className="font-semibold text-[#0b1c30] pr-2">{phoneA.screen}</div>
-            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.screen}</div>
+            <div className="font-semibold text-[#0b1c30] pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.screen}
+            </div>
+            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.screen}
+            </div>
           </div>
 
           {/* Vi xử lý */}
@@ -164,8 +190,14 @@ export default function ComparePage() {
               <Cpu size={16} className="text-[#994700]" />
               Vi xử lý (CPU)
             </div>
-            <div className="font-semibold text-[#0b1c30] pr-2">{phoneA.cpu}</div>
-            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.cpu}</div>
+            <div className="font-semibold text-[#0b1c30] pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.cpu}
+            </div>
+            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.cpu}
+            </div>
           </div>
 
           {/* Điểm Antutu */}
@@ -174,8 +206,14 @@ export default function ComparePage() {
               <Trophy size={16} className="text-amber-500" />
               Hiệu năng AnTuTu
             </div>
-            <div className="font-black text-[#994700] text-sm pr-2">{phoneA.antutu}</div>
-            <div className="font-black text-[#994700] text-sm pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.antutu}</div>
+            <div className="font-black text-[#994700] text-sm pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.antutu}
+            </div>
+            <div className="font-black text-[#994700] text-sm pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.antutu}
+            </div>
           </div>
 
           {/* RAM & Bộ nhớ trong */}
@@ -184,8 +222,14 @@ export default function ComparePage() {
               <Zap size={16} className="text-[#994700]" />
               Bộ nhớ RAM - ROM
             </div>
-            <div className="font-semibold text-[#0b1c30] pr-2">{phoneA.ramRom}</div>
-            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.ramRom}</div>
+            <div className="font-semibold text-[#0b1c30] pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.ramRom}
+            </div>
+            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.ramRom}
+            </div>
           </div>
 
           {/* Camera sau */}
@@ -194,8 +238,14 @@ export default function ComparePage() {
               <Camera size={16} className="text-[#994700]" />
               Hệ thống Camera
             </div>
-            <div className="font-semibold text-[#0b1c30] pr-2">{phoneA.rearCamera}</div>
-            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.rearCamera}</div>
+            <div className="font-semibold text-[#0b1c30] pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.rearCamera}
+            </div>
+            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.rearCamera}
+            </div>
           </div>
 
           {/* Pin & Sạc nhanh */}
@@ -204,22 +254,40 @@ export default function ComparePage() {
               <Battery size={16} className="text-[#994700]" />
               Dung lượng Pin & Sạc
             </div>
-            <div className="font-semibold text-[#0b1c30] pr-2">{phoneA.batteryCharge}</div>
-            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.batteryCharge}</div>
+            <div className="font-semibold text-[#0b1c30] pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.batteryCharge}
+            </div>
+            <div className="font-semibold text-[#0b1c30] pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.batteryCharge}
+            </div>
           </div>
 
           {/* Hệ điều hành */}
           <div className="grid grid-cols-1 md:grid-cols-3 p-4 hover:bg-gray-50 items-center">
             <div className="font-bold text-gray-500 mb-1 md:mb-0">Hệ điều hành</div>
-            <div className="font-semibold text-gray-700 pr-2">{phoneA.os}</div>
-            <div className="font-semibold text-gray-700 pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.os}</div>
+            <div className="font-semibold text-gray-700 pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.os}
+            </div>
+            <div className="font-semibold text-gray-700 pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.os}
+            </div>
           </div>
 
           {/* Trọng lượng & Thiết kế */}
           <div className="grid grid-cols-1 md:grid-cols-3 p-4 hover:bg-gray-50 items-center bg-gray-50/40">
             <div className="font-bold text-gray-500 mb-1 md:mb-0">Trọng lượng & Hoàn thiện</div>
-            <div className="font-semibold text-gray-700 pr-2">{phoneA.weight}</div>
-            <div className="font-semibold text-gray-700 pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">{phoneB.weight}</div>
+            <div className="font-semibold text-gray-700 pr-2">
+              <span className="md:hidden block text-[10px] font-bold text-amber-700 mb-0.5">{phoneA.name}:</span>
+              {phoneA.weight}
+            </div>
+            <div className="font-semibold text-gray-700 pl-2 border-t md:border-t-0 md:border-l border-gray-100 pt-2 md:pt-0">
+              <span className="md:hidden block text-[10px] font-bold text-blue-700 mb-0.5">{phoneB.name}:</span>
+              {phoneB.weight}
+            </div>
           </div>
         </div>
       </div>

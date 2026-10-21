@@ -1,16 +1,28 @@
-import React from "react";
+"use client";
+
+import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, ArrowRight, PackageCheck, Truck, ShieldCheck, MapPin, Phone, Home, FileText } from "lucide-react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { CheckCircle2, ArrowRight, PackageCheck, Truck, ShieldCheck, MapPin, Home, FileText } from "lucide-react";
 
-export const metadata = {
-  title: "Đặt Hàng Thành Công - MobileCity",
-  description: "Cảm ơn quý khách đã tin tưởng mua sắm tại MobileCity.",
-};
+function OrderSuccessContent() {
+  const searchParams = useSearchParams();
+  const [orderId, setOrderId] = useState("MC-892154");
+  const [dateStr, setDateStr] = useState("Hôm nay");
 
-export default function OrderSuccessPage() {
-  const orderId = "MC-" + Math.floor(100000 + Math.random() * 900000);
-  const now = new Date();
-  const dateStr = `${now.getHours()}:${now.getMinutes()} ngày ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+  useEffect(() => {
+    const paramOrderId = searchParams.get("orderId");
+    if (paramOrderId) {
+      setOrderId(paramOrderId);
+    } else {
+      setOrderId("MC-" + Math.floor(100000 + Math.random() * 900000));
+    }
+
+    const now = new Date();
+    const formatted = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")} ngày ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+    setDateStr(formatted);
+  }, [searchParams]);
 
   return (
     <div className="max-w-[800px] mx-auto px-4 py-10 space-y-8">
@@ -55,11 +67,14 @@ export default function OrderSuccessPage() {
         {/* Items List */}
         <div className="divide-y divide-gray-100">
           <div className="py-4 flex gap-4 items-center">
-            <div className="w-16 h-16 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden shrink-0">
-              <img
+            <div className="w-16 h-16 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden shrink-0 relative">
+              <Image
                 src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=160&auto=format&fit=crop&q=80"
                 alt="Xiaomi Redmi K70"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="64px"
+                unoptimized
               />
             </div>
             <div className="flex-1 min-w-0">
@@ -135,5 +150,19 @@ export default function OrderSuccessPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[50vh] flex items-center justify-center text-sm text-gray-500">
+          Đang tải thông tin đơn hàng...
+        </div>
+      }
+    >
+      <OrderSuccessContent />
+    </Suspense>
   );
 }

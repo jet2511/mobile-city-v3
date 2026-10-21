@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { User, Package, ShieldCheck, Clock, Phone, MapPin, ChevronRight, LogOut, CheckCircle2, AlertCircle } from "lucide-react";
 
 const MOCK_ORDERS = [
@@ -39,6 +40,43 @@ const MOCK_ORDERS = [
 
 export default function AccountCenterPage() {
   const [activeTab, setActiveTab] = useState<"orders" | "warranty" | "profile">("orders");
+  const [userName, setUserName] = useState("Nguyễn Văn An");
+  const [userPhone, setUserPhone] = useState("0988.123.456");
+  const [userMembership, setUserMembership] = useState("VIP Gold");
+  const [userPoints, setUserPoints] = useState(3200);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("mc_auth_user");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.name) setUserName(parsed.name);
+        if (parsed.phone) setUserPhone(parsed.phone);
+        if (parsed.membership) setUserMembership(parsed.membership);
+        if (parsed.points) setUserPoints(parsed.points);
+      }
+    } catch {
+      // Ignore JSON parse errors
+    }
+  }, []);
+
+  const handleUpdateProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaveSuccess(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "mc_auth_user",
+        JSON.stringify({
+          name: userName,
+          phone: userPhone,
+          membership: userMembership,
+          points: userPoints,
+        })
+      );
+    }
+    setTimeout(() => setSaveSuccess(false), 3000);
+  };
 
   return (
     <div className="max-w-[1240px] mx-auto px-4 lg:px-8 py-8 space-y-8">
@@ -46,16 +84,19 @@ export default function AccountCenterPage() {
       <div className="bg-[#0b1c30] text-white p-6 sm:p-8 rounded-3xl border border-[#213145] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
         <div className="flex items-center gap-4 text-center sm:text-left flex-col sm:flex-row">
           <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 text-[#0b1c30] font-black text-2xl flex items-center justify-center ring-4 ring-white/10">
-            A
+            {userName.charAt(0)}
           </div>
           <div>
             <div className="flex items-center justify-center sm:justify-start gap-2">
-              <h1 className="text-xl sm:text-2xl font-black">Nguyễn Văn An</h1>
+              <h1 className="text-xl sm:text-2xl font-black">{userName}</h1>
               <span className="bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
-                VIP Gold
+                {userMembership}
               </span>
             </div>
-            <p className="text-xs text-gray-400 mt-1">SĐT: 0988.xxx.888 • Điểm tích lũy: <span className="text-amber-400 font-bold">3.200 điểm (320k)</span></p>
+            <p className="text-xs text-gray-400 mt-1">
+              SĐT: {userPhone} • Điểm tích lũy:{" "}
+              <span className="text-amber-400 font-bold">{userPoints.toLocaleString()} điểm ({(userPoints * 100).toLocaleString()}đ)</span>
+            </p>
           </div>
         </div>
 
@@ -147,8 +188,15 @@ export default function AccountCenterPage() {
                     </div>
 
                     <div className="flex gap-4 items-center">
-                      <div className="w-14 h-14 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden shrink-0">
-                        <img src={order.image} alt={order.product} className="w-full h-full object-cover" />
+                      <div className="w-14 h-14 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden shrink-0 relative">
+                        <Image
+                          src={order.image}
+                          alt={order.product}
+                          fill
+                          className="object-cover"
+                          sizes="56px"
+                          unoptimized
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-bold text-[#0b1c30] truncate">{order.product}</h4>
@@ -214,23 +262,33 @@ export default function AccountCenterPage() {
           )}
 
           {activeTab === "profile" && (
-            <div className="bg-white border border-[#e2e8f0] p-6 rounded-2xl shadow-sm space-y-6">
+            <form onSubmit={handleUpdateProfile} className="bg-white border border-[#e2e8f0] p-6 rounded-2xl shadow-sm space-y-6">
               <h2 className="text-base font-black text-[#0b1c30]">Thông Tin Khách Hàng</h2>
+
+              {saveSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center gap-2 animate-in fade-in">
+                  <CheckCircle2 size={16} />
+                  <span>Đã lưu thông tin tài khoản thành công!</span>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
                   <label className="block text-gray-400 font-bold mb-1">Họ và tên</label>
                   <input
                     type="text"
-                    defaultValue="Nguyễn Văn An"
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl font-medium"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#994700]"
                   />
                 </div>
                 <div>
                   <label className="block text-gray-400 font-bold mb-1">Số điện thoại</label>
                   <input
                     type="text"
-                    defaultValue="0988.123.456"
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl font-medium"
+                    value={userPhone}
+                    onChange={(e) => setUserPhone(e.target.value)}
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#994700]"
                   />
                 </div>
                 <div className="sm:col-span-2">
@@ -238,18 +296,17 @@ export default function AccountCenterPage() {
                   <input
                     type="text"
                     defaultValue="120 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl font-medium"
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#994700]"
                   />
                 </div>
               </div>
               <button
-                type="button"
-                onClick={() => alert("Đã lưu thông tin khách hàng thành công!")}
+                type="submit"
                 className="px-5 py-2.5 bg-[#994700] hover:bg-[#803b00] text-white text-xs font-bold rounded-xl transition cursor-pointer"
               >
                 Cập Nhật Thông Tin
               </button>
-            </div>
+            </form>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { Region } from "@/types";
 import { REGIONS } from "@/lib/constants";
 
@@ -39,12 +39,16 @@ const RegionContext = createContext<RegionContextType | undefined>(undefined);
 export function RegionProvider({ children }: { children: React.ReactNode }) {
   const [region, setRegionState] = useState<Region>("HN");
   const [notification, setNotification] = useState<string | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("mc_region") as Region;
     if (saved && ["HN", "HCM", "DN"].includes(saved)) {
       setRegionState(saved);
     }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
 
   const setRegion = (newRegion: Region) => {
@@ -55,8 +59,13 @@ export function RegionProvider({ children }: { children: React.ReactNode }) {
     const regionInfo = REGIONS.find((r) => r.code === newRegion);
     const regionName = regionInfo ? regionInfo.name : newRegion;
     setNotification(`Đã chuyển khu vực xem giá & tồn kho sang: ${regionName}`);
-    setTimeout(() => {
+    
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
       setNotification(null);
+      timerRef.current = null;
     }, 3000);
   };
 

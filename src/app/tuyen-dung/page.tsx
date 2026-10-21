@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Briefcase, MapPin, DollarSign, Clock, Users, Send, CheckCircle2, Award, HeartHandshake } from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock, Users, Send, CheckCircle2, Award, HeartHandshake, AlertCircle } from "lucide-react";
 
 interface Job {
   id: string;
@@ -63,11 +63,13 @@ export default function CareersPage() {
   const [candidateName, setCandidateName] = useState("");
   const [candidatePhone, setCandidatePhone] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!candidateName || !candidatePhone) {
-      alert("Vui lòng điền đủ họ tên và số điện thoại!");
+    setErrorMsg("");
+    if (!candidateName.trim() || !candidatePhone.trim()) {
+      setErrorMsg("Vui lòng điền đủ họ tên và số điện thoại liên hệ!");
       return;
     }
     setIsSubmitted(true);
@@ -118,34 +120,32 @@ export default function CareersPage() {
                 onClick={() => setSelectedJob(job.id)}
                 className={`p-6 rounded-3xl border transition-all cursor-pointer relative overflow-hidden ${
                   selectedJob === job.id
-                    ? "bg-amber-50/40 border-[#994700] ring-2 ring-[#994700]/20 shadow-sm"
+                    ? "bg-amber-50/40 border-[#994700] ring-2 ring-[#994700]/20 shadow-md"
                     : "bg-white border-[#e2e8f0] hover:border-gray-300 shadow-sm"
                 }`}
               >
                 {job.highlight && (
-                  <span className="absolute top-0 right-0 bg-[#994700] text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                    Tuyển Gấp
+                  <span className="absolute top-0 right-0 bg-[#bb0112] text-white text-[10px] font-black uppercase px-3 py-1 rounded-bl-xl tracking-wider">
+                    HOT Tuyển Gấp
                   </span>
                 )}
 
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">
-                    {job.department}
-                  </span>
-                  <h3 className="text-base sm:text-lg font-black text-[#0b1c30]">{job.title}</h3>
+                  <span className="text-xs font-bold text-gray-400 uppercase">{job.department}</span>
+                  <h3 className="text-lg font-black text-[#0b1c30]">{job.title}</h3>
 
                   <div className="flex flex-wrap gap-y-2 gap-x-4 text-xs text-gray-600 pt-2">
-                    <span className="flex items-center gap-1.5 font-bold text-[#994700]">
-                      <DollarSign size={15} />
-                      {job.salary}
+                    <span className="flex items-center gap-1">
+                      <DollarSign size={14} className="text-[#994700]" />
+                      <strong>{job.salary}</strong>
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <MapPin size={15} className="text-gray-400" />
+                    <span className="flex items-center gap-1">
+                      <MapPin size={14} className="text-[#994700]" />
                       {job.location}
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={15} className="text-gray-400" />
-                      Hạn nộp: {job.deadline}
+                    <span className="flex items-center gap-1">
+                      <Clock size={14} className="text-gray-400" />
+                      Hạn: {job.deadline}
                     </span>
                   </div>
                 </div>
@@ -156,14 +156,21 @@ export default function CareersPage() {
 
         {/* Right: Fast Apply Form */}
         <div>
-          <div className="bg-white border border-[#e2e8f0] rounded-3xl p-6 sm:p-8 shadow-sm space-y-5 sticky top-20">
+          <div className="bg-white border border-[#e2e8f0] rounded-3xl p-6 sm:p-8 shadow-sm sticky top-24 space-y-6">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#994700]">Ứng Tuyển Nhanh</span>
-              <h3 className="text-xl font-black text-[#0b1c30] mt-1">Gửi Hồ Sơ Ngay</h3>
+              <span className="text-xs font-bold text-[#994700] uppercase tracking-wider">Ứng Tuyển Nhanh</span>
+              <h3 className="text-lg font-black text-[#0b1c30] mt-0.5">Gửi Thông Tin Ứng Tuyển</h3>
               <p className="text-xs text-gray-500 mt-1">
-                Bộ phận nhân sự MobileCity sẽ liên hệ phỏng vấn trong 24 giờ làm việc.
+                Phòng nhân sự sẽ liên hệ phỏng vấn qua Zalo / Số điện thoại trong vòng 24h.
               </p>
             </div>
+
+            {errorMsg && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center gap-2">
+                <AlertCircle size={15} className="shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
             {isSubmitted ? (
               <div className="bg-emerald-50 border border-emerald-200 p-6 rounded-2xl text-center space-y-3">
@@ -173,6 +180,7 @@ export default function CareersPage() {
                   Cảm ơn bạn {candidateName}. MobileCity đã ghi nhận thông tin ứng tuyển cho vị trí này.
                 </p>
                 <button
+                  type="button"
                   onClick={() => setIsSubmitted(false)}
                   className="text-xs text-[#994700] underline font-bold mt-2 inline-block cursor-pointer"
                 >

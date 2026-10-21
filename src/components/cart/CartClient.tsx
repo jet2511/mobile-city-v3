@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useRegion } from "@/context/RegionContext";
-import { Trash2, Plus, Minus, ArrowLeft, ShieldCheck, CheckCircle2, Truck, Store, ArrowRight, Sparkles } from "lucide-react";
+import { Trash2, Plus, Minus, ArrowLeft, ShieldCheck, CheckCircle2, Truck, Store, ArrowRight, Sparkles, FileText } from "lucide-react";
 
 export function CartClient() {
   const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
@@ -20,8 +20,9 @@ export function CartClient() {
     e.preventDefault();
     if (!customerName || !customerPhone) return;
 
+    const orderCode = "MC-" + Math.floor(100000 + Math.random() * 900000);
     clearCart();
-    window.location.href = "/dat-hang-thanh-cong";
+    setOrderSuccess(orderCode);
   };
 
   if (orderSuccess) {
@@ -40,7 +41,7 @@ export function CartClient() {
         <p className="text-xs text-gray-500">
           Tổng đài viên chi nhánh {currentRegionName} sẽ liên hệ xác nhận đơn hàng trong vòng 10 phút.
         </p>
-        <div className="pt-4 flex justify-center gap-3">
+        <div className="pt-4 flex flex-wrap justify-center gap-3">
           <Link
             href="/"
             className="inline-block bg-[#8d4b00] hover:bg-[#b15f00] text-white font-bold text-xs px-6 py-3 rounded-xl transition-all shadow-sm"
@@ -48,10 +49,11 @@ export function CartClient() {
             Tiếp tục mua sắm
           </Link>
           <Link
-            href="/tra-cuu-bao-hanh"
-            className="inline-block bg-[#f8f9ff] border border-[#e2e8f0] hover:border-[#8d4b00] text-[#0b1c30] font-bold text-xs px-6 py-3 rounded-xl transition-all"
+            href={`/dat-hang-thanh-cong?orderId=${orderSuccess}`}
+            className="inline-flex items-center gap-1.5 bg-[#f8f9ff] border border-[#e2e8f0] hover:border-[#8d4b00] text-[#0b1c30] font-bold text-xs px-6 py-3 rounded-xl transition-all"
           >
-            Tra cứu đơn hàng
+            <FileText size={14} />
+            Xem chi tiết đơn hàng
           </Link>
         </div>
       </div>
@@ -92,171 +94,189 @@ export function CartClient() {
         <div className="space-y-3">
           {items.map((item) => {
             const itemUnitPrice = item.basePrice + (item.hasGoldCare ? item.goldCareFee : 0);
+            const versionStr = [item.ram, item.storage].filter(Boolean).join(" - ");
+
             return (
               <div
                 key={item.id}
                 data-testid={`cart-item-${item.id}`}
                 className="bg-white p-4 rounded-2xl border border-[#e2e8f0] shadow-sm flex items-center gap-4 relative overflow-hidden"
               >
-                <img
-                  src={item.thumbnail}
-                  alt={item.name}
-                  className="w-18 h-18 object-contain rounded-xl border border-gray-100 bg-[#f8f9ff] p-1.5"
-                />
+                {/* Thumbnail */}
+                <div className="w-20 h-20 bg-[#f8f9ff] border border-gray-100 rounded-xl flex items-center justify-center p-2 flex-shrink-0">
+                  <img src={item.thumbnail} alt={item.name} className="max-w-full max-h-full object-contain" />
+                </div>
 
+                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-sm text-[#0b1c30] truncate">{item.name}</h3>
-                  <div className="text-xs text-[#887364] mt-0.5">
-                    Phân loại: <strong className="text-[#0b1c30]">{item.ram || ""} {item.storage || ""}</strong> • Màu: <strong className="text-[#0b1c30]">{item.color}</strong>
+                  <div className="flex items-center gap-2 text-[11px] text-[#887364] mt-0.5">
+                    {item.color && <span className="bg-gray-100 px-2 py-0.5 rounded">{item.color}</span>}
+                    {versionStr && <span className="bg-gray-100 px-2 py-0.5 rounded">{versionStr}</span>}
                   </div>
+
                   {item.hasGoldCare && (
-                    <div className="flex items-center gap-1 text-[11px] text-[#92400e] bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-semibold mt-1 w-fit">
-                      <ShieldCheck size={13} className="text-[#d97706]" />
-                      Đã kèm Gói Bảo Hành Vàng (+{item.goldCareFee.toLocaleString("vi-VN")} đ)
+                    <div className="mt-1.5 flex items-center gap-1 text-[11px] text-[#8d4b00] font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200/50 w-fit">
+                      <ShieldCheck size={12} className="text-[#8d4b00]" />
+                      Bảo Hành Vàng 12T (+{item.goldCareFee.toLocaleString("vi-VN")}₫)
                     </div>
                   )}
-                  <div className="text-sm font-extrabold text-[#bb0112] mt-1.5">
-                    {itemUnitPrice.toLocaleString("vi-VN")} đ
+
+                  <div className="mt-2 text-[#bb0112] font-black text-sm">
+                    {itemUnitPrice.toLocaleString("vi-VN")}₫
                   </div>
                 </div>
 
-                {/* Bộ chỉnh số lượng */}
-                <div className="flex items-center border border-[#cbd5e1] rounded-lg overflow-hidden bg-[#f8f9ff]">
+                {/* Quantity Controls & Delete */}
+                <div className="flex flex-col items-end gap-3 flex-shrink-0">
                   <button
-                    onClick={() => updateQuantity(item.id, -1)}
-                    className="p-1.5 hover:bg-gray-200 text-gray-700 transition-colors cursor-pointer"
+                    data-testid={`btn-remove-${item.id}`}
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-gray-400 hover:text-red-600 transition-colors p-1"
+                    title="Xóa sản phẩm"
                   >
-                    <Minus size={13} />
+                    <Trash2 size={16} />
                   </button>
-                  <span data-testid={`cart-qty-${item.id}`} className="px-3 text-xs font-bold text-[#0b1c30]">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(item.id, 1)}
-                    className="p-1.5 hover:bg-gray-200 text-gray-700 transition-colors cursor-pointer"
-                  >
-                    <Plus size={13} />
-                  </button>
-                </div>
 
-                <button
-                  data-testid={`btn-remove-${item.id}`}
-                  onClick={() => removeFromCart(item.id)}
-                  className="text-gray-400 hover:text-red-500 p-1.5 transition-colors cursor-pointer"
-                >
-                  <Trash2 size={16} />
-                </button>
+                  <div className="flex items-center border border-[#dbc2b0] rounded-lg overflow-hidden bg-[#f8f9ff]">
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="px-2.5 py-1 text-gray-600 hover:bg-gray-200 text-xs font-bold transition-colors"
+                    >
+                      <Minus size={12} />
+                    </button>
+                    <span className="px-3 py-1 text-xs font-black text-[#0b1c30] min-w-[30px] text-center bg-white">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="px-2.5 py-1 text-gray-600 hover:bg-gray-200 text-xs font-bold transition-colors"
+                    >
+                      <Plus size={12} />
+                    </button>
+                  </div>
+                </div>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Cột phải: Form Đặt Hàng & Checkout Stitch Style (5 cols) */}
-      <div className="lg:col-span-5">
-        <form onSubmit={handleCheckout} className="bg-white p-6 rounded-2xl border border-[#e2e8f0] shadow-sm space-y-4">
-          <h2 className="font-extrabold text-base text-[#0b1c30] uppercase border-b pb-2.5">
-            Thông Tin Nhận Hàng & Thanh Toán
-          </h2>
+      {/* Cột phải: Form đặt hàng & Thông tin thanh toán (5 cols) */}
+      <div className="lg:col-span-5 space-y-4">
+        {/* Tóm tắt chi phí */}
+        <div className="bg-white p-5 rounded-2xl border border-[#e2e8f0] shadow-sm space-y-3">
+          <div className="font-black text-sm uppercase text-[#0b1c30] border-b pb-2 border-gray-100 flex items-center gap-1.5">
+            <Sparkles size={16} className="text-[#8d4b00]" /> Tóm Tắt Thanh Toán
+          </div>
 
-          {/* Phương thức nhận hàng */}
-          <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="flex justify-between text-xs text-[#554336]">
+            <span>Tổng tiền hàng ({items.reduce((acc, i) => acc + i.quantity, 0)} món):</span>
+            <span className="font-bold text-[#0b1c30]">{totalPrice.toLocaleString("vi-VN")}₫</span>
+          </div>
+
+          <div className="flex justify-between text-xs text-[#554336]">
+            <span>Phí giao hàng:</span>
+            <span className="text-emerald-600 font-bold">Miễn phí toàn quốc</span>
+          </div>
+
+          <div className="border-t border-dashed border-gray-200 pt-3 flex justify-between items-center">
+            <span className="font-bold text-sm text-[#0b1c30]">Tổng thanh toán:</span>
+            <span className="font-black text-xl text-[#bb0112]">{totalPrice.toLocaleString("vi-VN")}₫</span>
+          </div>
+          <p className="text-[11px] text-gray-500 italic text-right">
+            (Đã bao gồm VAT & áp dụng bảo hành tại {currentRegionName})
+          </p>
+        </div>
+
+        {/* Thông tin giao nhận hàng */}
+        <form onSubmit={handleCheckout} className="bg-white p-5 rounded-2xl border border-[#e2e8f0] shadow-sm space-y-4">
+          <div className="font-black text-sm uppercase text-[#0b1c30] border-b pb-2 border-gray-100">
+            Thông Tin Khách Hàng
+          </div>
+
+          {/* Phương thức nhận */}
+          <div className="grid grid-cols-2 gap-2 text-xs font-bold">
             <button
               type="button"
               onClick={() => setDeliveryMethod("home")}
-              className={`p-3 rounded-xl border font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${
                 deliveryMethod === "home"
-                  ? "border-[#8d4b00] bg-amber-50 text-[#8d4b00] ring-1 ring-[#8d4b00]"
-                  : "border-[#e2e8f0] text-gray-600 hover:bg-gray-50"
+                  ? "border-[#8d4b00] bg-amber-50 text-[#8d4b00]"
+                  : "border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <Truck size={15} /> Giao tận nơi (COD)
+              <Truck size={16} /> Giao Tận Nơi
             </button>
             <button
               type="button"
               onClick={() => setDeliveryMethod("store")}
-              className={`p-3 rounded-xl border font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${
                 deliveryMethod === "store"
-                  ? "border-[#8d4b00] bg-amber-50 text-[#8d4b00] ring-1 ring-[#8d4b00]"
-                  : "border-[#e2e8f0] text-gray-600 hover:bg-gray-50"
+                  ? "border-[#8d4b00] bg-amber-50 text-[#8d4b00]"
+                  : "border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <Store size={15} /> Nhận tại Shop ({currentRegionName})
+              <Store size={16} /> Nhận Tại Showroom
             </button>
           </div>
 
+          {/* Input Fields */}
           <div className="space-y-3 text-xs">
             <div>
-              <label className="block font-semibold text-[#0b1c30] mb-1">Họ và tên người nhận *</label>
+              <label className="block text-gray-600 font-semibold mb-1">Họ và tên người nhận *</label>
               <input
                 type="text"
-                data-testid="checkout-name"
                 required
+                data-testid="checkout-name"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Nguyễn Văn A"
-                className="w-full border border-[#cbd5e1] rounded-xl px-3.5 py-2.5 outline-none focus:border-[#8d4b00] bg-[#f8f9ff] focus:bg-white transition-all text-xs"
+                placeholder="Ví dụ: Nguyễn Văn A"
+                className="w-full bg-[#f8f9ff] border border-[#cbd5e1] rounded-lg p-2.5 text-xs outline-none focus:border-[#8d4b00]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-[#0b1c30] mb-1">Số điện thoại liên hệ *</label>
+              <label className="block text-gray-600 font-semibold mb-1">Số điện thoại liên hệ *</label>
               <input
                 type="tel"
-                data-testid="checkout-phone"
                 required
+                data-testid="checkout-phone"
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
-                placeholder="0987 654 321"
-                className="w-full border border-[#cbd5e1] rounded-xl px-3.5 py-2.5 outline-none focus:border-[#8d4b00] bg-[#f8f9ff] focus:bg-white transition-all text-xs"
+                placeholder="Ví dụ: 0988 123 456"
+                className="w-full bg-[#f8f9ff] border border-[#cbd5e1] rounded-lg p-2.5 text-xs outline-none focus:border-[#8d4b00]"
               />
             </div>
 
-            {deliveryMethod === "home" ? (
+            {deliveryMethod === "home" && (
               <div>
-                <label className="block font-semibold text-[#0b1c30] mb-1">Địa chỉ giao hàng nhận máy</label>
+                <label className="block text-gray-600 font-semibold mb-1">Địa chỉ nhận hàng *</label>
                 <input
                   type="text"
+                  required
                   data-testid="checkout-address"
                   value={customerAddress}
                   onChange={(e) => setCustomerAddress(e.target.value)}
-                  placeholder="Số nhà, Tên đường, Phường/Xã, Quận/Huyện"
-                  className="w-full border border-[#cbd5e1] rounded-xl px-3.5 py-2.5 outline-none focus:border-[#8d4b00] bg-[#f8f9ff] focus:bg-white transition-all text-xs"
+                  placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
+                  className="w-full bg-[#f8f9ff] border border-[#cbd5e1] rounded-lg p-2.5 text-xs outline-none focus:border-[#8d4b00]"
                 />
-              </div>
-            ) : (
-              <div className="bg-[#eff4ff] p-3 rounded-xl border border-[#dce9ff] text-[11px] text-[#554336] font-medium leading-relaxed">
-                📍 Bạn sẽ đến nhận máy và thanh toán trực tiếp tại showroom chi nhánh <strong>{currentRegionName}</strong>. Quản trị viên chi nhánh sẽ giữ máy cho bạn trong 24 giờ.
               </div>
             )}
           </div>
 
-          {/* Tóm tắt tổng tiền */}
-          <div className="border-t border-[#e2e8f0] pt-3.5 space-y-2 text-xs">
-            <div className="flex justify-between text-gray-600">
-              <span>Tạm tính:</span>
-              <span className="font-semibold text-[#0b1c30]">{totalPrice.toLocaleString("vi-VN")} đ</span>
-            </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Phí vận chuyển:</span>
-              <span className="text-emerald-600 font-bold">Miễn phí toàn quốc</span>
-            </div>
-            <div className="flex justify-between text-sm font-extrabold text-[#0b1c30] border-t border-[#e2e8f0] pt-2.5">
-              <span>Tổng thanh toán:</span>
-              <span data-testid="checkout-total-price" className="text-[#bb0112] text-xl font-black">
-                {totalPrice.toLocaleString("vi-VN")} đ
-              </span>
-            </div>
-          </div>
-
+          {/* Submit Button */}
           <button
             type="submit"
             data-testid="btn-submit-order"
-            className="w-full bg-[#bb0112] hover:bg-[#a10110] text-white font-black py-3.5 rounded-xl text-sm transition-all shadow-md uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full bg-gradient-to-r from-[#bb0112] to-[#8d4b00] hover:opacity-95 text-white font-black text-sm uppercase py-3.5 rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            TIẾN HÀNH ĐẶT HÀNG NGAY
+            <span>Xác Nhận Đặt Hàng (COD)</span>
             <ArrowRight size={16} />
           </button>
+          <p className="text-[11px] text-gray-400 text-center">
+            Kiểm tra hàng trước khi thanh toán • Hỗ trợ đổi trả 15 ngày
+          </p>
         </form>
       </div>
     </div>

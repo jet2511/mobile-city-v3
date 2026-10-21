@@ -66,7 +66,7 @@ export function Footer() {
           <ul className="space-y-2">
             <li>
               <Link href="/chinh-sach-bao-hanh-vang" className="hover:text-[#8d4b00] flex items-center gap-1 font-semibold text-[#8d4b00]">
-                <ChevronRight size={13} className="text-[#8d4b00]" /> Chính sách Bảo Hành Vàng 12T
+                <ChevronRight size={13} className="text-[#8d4b00]" /> Chính sách Bảo Hành Vàng 12 Tháng
               </Link>
             </li>
             <li>
@@ -140,7 +140,7 @@ export function Footer() {
 
           <div className="pt-1 flex items-center gap-3">
             <div className="border border-red-200 bg-red-50 text-[#bb0112] px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1">
-              <Award size={14} /> ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG
+              <Award size={14} /> Đã thông báo Bộ Công Thương
             </div>
           </div>
         </div>
