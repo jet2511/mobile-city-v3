@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { MapPin, Phone, ShieldCheck, Mail, CreditCard, Award, Share2, Video, ChevronRight } from "lucide-react";
+import { MapPin, Phone, ShieldCheck, Mail, CreditCard, Award, Share2, Video, ChevronRight, Briefcase, ArrowLeftRight, RotateCcw, Wrench } from "lucide-react";
 
 export function Footer() {
   return (
@@ -57,11 +57,11 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Cột 3: Quy định & Chính sách */}
+        {/* Cột 3: Dịch Vụ & Tiện Ích Khách Hàng */}
         <div className="space-y-3.5">
           <div className="flex items-center gap-1.5 font-bold text-sm text-[#0b1c30] uppercase border-b pb-2 border-amber-200">
             <ShieldCheck size={16} className="text-[#8d4b00]" />
-            Quy Định & Chính Sách
+            Dịch Vụ & Khách Hàng
           </div>
           <ul className="space-y-2">
             <li>
@@ -70,13 +70,18 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/he-thong-showroom" className="hover:text-[#8d4b00] flex items-center gap-1">
-                <ChevronRight size={13} className="text-gray-400" /> Hệ thống showroom toàn quốc
+              <Link href="/so-sanh" className="hover:text-[#8d4b00] flex items-center gap-1">
+                <ChevronRight size={13} className="text-gray-400" /> So sánh đối đầu điện thoại
+              </Link>
+            </li>
+            <li>
+              <Link href="/sua-chua/thay-man-hinh-iphone-14-pro-max" className="hover:text-[#8d4b00] flex items-center gap-1">
+                <ChevronRight size={13} className="text-gray-400" /> Thay màn hình iPhone chính hãng
               </Link>
             </li>
             <li>
               <Link href="/huong-dan-tra-gop" className="hover:text-[#8d4b00] flex items-center gap-1">
-                <ChevronRight size={13} className="text-gray-400" /> Hướng dẫn mua trả góp 0%
+                <ChevronRight size={13} className="text-gray-400" /> Dự toán mua trả góp 0%
               </Link>
             </li>
             <li>
@@ -92,14 +97,31 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Cột 4: Đăng ký nhận tin & Chứng nhận */}
+        {/* Cột 4: Đăng Ký, Tuyển Dụng & Chứng Nhận */}
         <div className="space-y-4">
           <div className="flex items-center gap-1.5 font-bold text-sm text-[#0b1c30] uppercase border-b pb-2 border-amber-200">
-            <Mail size={16} className="text-[#8d4b00]" />
-            Đăng Ký Nhận Khuyến Mãi
+            <Briefcase size={16} className="text-[#8d4b00]" />
+            Tuyển Dụng & Bản Tin
           </div>
-          <p className="text-xs text-gray-500">
-            Nhận thông báo khi có đợt ưu đãi giá sốc hoặc hàng hot mới về:
+          
+          <div className="bg-amber-50/70 p-3 rounded-xl border border-amber-200/60 space-y-2">
+            <div className="font-bold text-[#0b1c30] flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
+              MobileCity Đang Tuyển Dụng!
+            </div>
+            <p className="text-[11px] text-gray-600">
+              Kỹ thuật viên sửa chữa, reviewer video & chuyên viên tư vấn bán hàng.
+            </p>
+            <Link
+              href="/tuyen-dung"
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#8d4b00] hover:underline"
+            >
+              Gia nhập đội ngũ ngay →
+            </Link>
+          </div>
+
+          <p className="text-[11px] text-gray-500">
+            Nhận thông báo ưu đãi giá sốc hoặc hàng hot mới về:
           </p>
           <div className="flex items-center gap-1.5">
             <input
@@ -116,9 +138,9 @@ export function Footer() {
             </button>
           </div>
 
-          <div className="pt-2 flex items-center gap-3">
+          <div className="pt-1 flex items-center gap-3">
             <div className="border border-red-200 bg-red-50 text-[#bb0112] px-2.5 py-1 rounded text-[11px] font-bold flex items-center gap-1">
-              <Award size={14} /> ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG
+              <Award size={14} /> Đã thông báo Bộ Công Thương
             </div>
           </div>
         </div>
@@ -128,7 +150,13 @@ export function Footer() {
       <div className="border-t border-[#e2e8f0] bg-[#f8f9ff] py-4 text-center text-[11px] text-[#887364]">
         <div className="max-w-[1240px] mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
           <span>© 2026 MobileCity - Hệ thống bán lẻ điện thoại di động & sửa chữa uy tín toàn quốc.</span>
-          <span>Bản quyền thuộc về MobileCity Việt Nam</span>
+          <div className="flex items-center gap-4">
+            <Link href="/tuyen-dung" className="hover:underline">Tuyển dụng</Link>
+            <span>•</span>
+            <Link href="/dang-nhap" className="hover:underline">Tài khoản</Link>
+            <span>•</span>
+            <Link href="/he-thong-showroom" className="hover:underline">Showroom</Link>
+          </div>
         </div>
       </div>
     </footer>

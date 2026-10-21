@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Grid, Wrench, ShieldCheck, ShoppingCart } from "lucide-react";
+import { Home, Grid, Wrench, ShoppingCart, User } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export function MobileBottomNav() {
@@ -12,10 +12,10 @@ export function MobileBottomNav() {
 
   const navItems = [
     { label: "Trang chủ", href: "/", icon: Home },
-    { label: "Danh mục", href: "/dien-thoai", icon: Grid },
+    { label: "Sản phẩm", href: "/dien-thoai", icon: Grid },
     { label: "Sửa chữa", href: "/sua-chua", icon: Wrench },
-    { label: "Bảo hành", href: "/tra-cuu-bao-hanh", icon: ShieldCheck },
     { label: "Giỏ hàng", href: "/gio-hang", icon: ShoppingCart, badge: totalQuantity },
+    { label: "Tài khoản", href: "/dang-nhap", icon: User },
   ];
 
   return (
@@ -25,7 +25,11 @@ export function MobileBottomNav() {
     >
       {navItems.map((item) => {
         const Icon = item.icon;
-        const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+        const isActive =
+          pathname === item.href ||
+          (item.href !== "/" && pathname.startsWith(item.href)) ||
+          (item.href === "/dang-nhap" && pathname.startsWith("/tai-khoan"));
+
         return (
           <Link
             key={item.href}
